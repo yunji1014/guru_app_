@@ -11,29 +11,28 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
-    @SuppressLint("WrongViewCast")
     lateinit var signin: TextView
+    lateinit var loginbutton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // id가 signin인 버튼을 찾습니다.
-        signin = findViewById<TextView>(R.id.textView4)
+        signin = findViewById<TextView>(R.id.signin)
+        loginbutton = findViewById<Button>(R.id.loginbutton)
 
         // 버튼 클릭 리스너를 설정합니다.
         signin.setOnClickListener {
             // 새로운 인텐트를 생성하여 SignupActivity로 이동합니다.
-            var intent = Intent(this, SignupActivity::class.java)
+            //var할시 오류.. 초기화문제
+            val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
         }
 
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        loginbutton.setOnClickListener{
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
         }
     }
 }
