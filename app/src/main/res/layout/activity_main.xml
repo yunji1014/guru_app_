@@ -38,7 +38,7 @@
             android:background="@drawable/login_border"
             android:drawableTint="#FBFBFB"
             android:ems="10"
-            android:hint="   아이디"
+            android:hint="   아이디1"
             android:inputType="textPersonName"
             android:text="" />
 

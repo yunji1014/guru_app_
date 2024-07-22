@@ -12,17 +12,19 @@ import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
     @SuppressLint("WrongViewCast")
+    lateinit var signin: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // id가 signin인 버튼을 찾습니다.
-        val textView: TextView = findViewById(R.id.signin)
+        signin = findViewById<TextView>(R.id.textView4)
 
         // 버튼 클릭 리스너를 설정합니다.
-        textView.setOnClickListener {
+        signin.setOnClickListener {
             // 새로운 인텐트를 생성하여 SignupActivity로 이동합니다.
-            val intent = Intent(this, SignupActivity::class.java)
+            var intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
         }
 
