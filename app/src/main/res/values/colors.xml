@@ -2,8 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="found_dark">#6FAEBC</color>
-    <color name="found_middle">#AAD8EB</color>
-    <color name="found_bright">#E0F3F7</color>
+    <color name="found_dark">#196191</color>
+    <color name="found_middle">#9BC7EC</color>
+    <color name="found_bright">#AFD6F8</color>
     <color name="found_deep_dark">#053D49</color>
 </resources>
