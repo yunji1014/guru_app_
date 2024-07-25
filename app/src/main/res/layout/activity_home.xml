@@ -13,14 +13,17 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <androidx.appcompat.widget.SearchView
+
+        <SearchView
             android:id="@+id/search"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
+            android:background="@drawable/round_border"
             android:focusable="true"
             android:padding="20dp"
             app:iconifiedByDefault="false"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_weight="1"
@@ -49,7 +52,6 @@
             android:background="@drawable/round_border"
             android:text="인기 도서     "
             android:gravity="center"
-            android:textAlignment="textEnd"
             android:textSize="20sp"
             android:textStyle="bold" />
 
