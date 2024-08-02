@@ -48,7 +48,7 @@ class HomeActivity : AppCompatActivity() {
         navView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    startActivity(Intent(this, HomeActivity::class.java))
+                    // do nothing to prevent reloading HomeActivity
                     true
                 }
                 R.id.navigation_bookshelf -> {
