@@ -19,9 +19,6 @@
             android:name=".FindPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".FindPWActivity"
-            android:exported="false" />
-        <activity
             android:name=".TestActivity"
             android:exported="false" />
         <activity
