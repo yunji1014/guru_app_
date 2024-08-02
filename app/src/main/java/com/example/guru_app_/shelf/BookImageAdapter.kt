@@ -1,7 +1,5 @@
-package com.example.guru_app_
+package com.example.guru_app_.shelf
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -10,18 +8,14 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.guru_app_.R
 import com.example.guru_app_.activities.BookMemoActivity
 import com.example.guru_app_.database.BookDao
 import com.example.guru_app_.models.Book
 
-class BookImageAdapter(private val context: Context, private var books: List<Book>) : RecyclerView.Adapter<BookImageAdapter.BookImageViewHolder>() {
+class BookImageAdapter(private val context: Context, private var books: List<Book>, private val bookDao: BookDao) : RecyclerView.Adapter<BookImageAdapter.BookImageViewHolder>() {
 
     class BookImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val bookImageButton: ImageButton = view.findViewById(R.id.bookImageButton)

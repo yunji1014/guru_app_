@@ -1,4 +1,4 @@
-package com.example.guru_app_
+package com.example.guru_app_.search
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -10,6 +10,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.guru_app_.HomeActivity
+import com.example.guru_app_.R
 import com.example.guru_app_.database.BookDao
 import com.example.guru_app_.models.Book
 import org.json.JSONException

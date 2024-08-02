@@ -1,8 +1,8 @@
 package com.example.guru_app_.fragments
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +20,7 @@ class MemoListFragment : Fragment() {
     private lateinit var memoListAdapter: MemoListAdapter
     private lateinit var memoDao: MemoDao
     private var listener: MemoItemClickListener? = null
+    private var bookId: Int = -1
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -27,6 +28,13 @@ class MemoListFragment : Fragment() {
             listener = context
         } else {
             throw RuntimeException("$context must implement MemoItemClickListener")
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            bookId = it.getInt(ARG_BOOK_ID)
         }
     }
 
@@ -55,20 +63,43 @@ class MemoListFragment : Fragment() {
                 }
 
                 override fun onLongItemClick(view: View, position: Int) {
-                    // long click event handling
+                    val memo = memoListAdapter.getMemoAt(position)
+                    showDeleteConfirmationDialog(memo)
                 }
             })
         )
     }
 
+    private fun showDeleteConfirmationDialog(memo: Memo) {
+        AlertDialog.Builder(context)
+            .setMessage("메모를 삭제하시겠습니까?")
+            .setPositiveButton("삭제") { _, _ ->
+                memoDao.deleteMemo(memo.id!!)
+                refreshMemoList()
+            }
+            .setNegativeButton("취소", null)
+            .show()
+    }
+
     fun refreshMemoList() {
-        val memos = memoDao.getMemosForBook(1) // 임의의 bookId 1 사용
-        Log.d("MemoListFragment", "Loaded memos: $memos") // 로드된 메모를 로그로 출력
+        val memos = memoDao.getMemosForBook(bookId)
         memoListAdapter = MemoListAdapter(memos)
         view?.findViewById<RecyclerView>(R.id.memo_recycler_view)?.adapter = memoListAdapter
     }
 
     interface MemoItemClickListener {
         fun onMemoItemClick(memoId: Int)
+    }
+
+    companion object {
+        private const val ARG_BOOK_ID = "book_id"
+
+        @JvmStatic
+        fun newInstance(bookId: Int) =
+            MemoListFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(ARG_BOOK_ID, bookId)
+                }
+            }
     }
 }

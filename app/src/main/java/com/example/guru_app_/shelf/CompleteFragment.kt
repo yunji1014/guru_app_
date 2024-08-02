@@ -1,4 +1,4 @@
-package com.example.guru_app_
+package com.example.guru_app_.shelf
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -10,9 +10,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.guru_app_.R
 import com.example.guru_app_.database.BookDao
 
-class ReadingFragment : Fragment() {
+class CompleteFragment : Fragment() {
     private lateinit var bookImageAdapter: BookImageAdapter
     private lateinit var recyclerView: RecyclerView
 
@@ -20,7 +21,7 @@ class ReadingFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_reading, container, false)
+        return inflater.inflate(R.layout.fragment_complete, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,9 +32,9 @@ class ReadingFragment : Fragment() {
         val gridLayoutManager = GridLayoutManager(context, 3) // 열의 수
         recyclerView.layoutManager = gridLayoutManager
 
-        val books = bookDao.getAllBooks().filter { it.status == "reading" }
+        val books = bookDao.getAllBooks().filter { it.status == "endreading" }
 
-        bookImageAdapter = BookImageAdapter(requireContext(), books)
+        bookImageAdapter = BookImageAdapter(requireContext(), books, bookDao)
         recyclerView.adapter = bookImageAdapter
     }
 
