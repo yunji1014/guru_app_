@@ -5,4 +5,12 @@
     <color name="blue_200">#AFD6F8</color>
     <color name="blue_300">#9BC7EC</color>
     <color name="blue_500">#196191</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorRatingBar">#BDBDBD</color>
+    <color name="colorRatingBarActivated">#FFC107</color>
+    <color name="colorRatingBarHighlight">#FFEB3B</color>
+    <color name="colorInactive">#9BC7EC</color>
+    <color name="colorActive">#196191</color>
 </resources>

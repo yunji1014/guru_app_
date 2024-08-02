@@ -67,6 +67,13 @@ class MemoDao(context: Context) {
         return memos
     }
 
+    fun deleteMemo(memoId: Int) {
+        val db = dbHelper.writableDatabase
+        db.delete("memos", "id=?", arrayOf(memoId.toString()))
+        db.close()
+    }
+
+
     fun getMemoById(memoId: Int): Memo? {
         val db = dbHelper.readableDatabase
         val cursor = db.query(

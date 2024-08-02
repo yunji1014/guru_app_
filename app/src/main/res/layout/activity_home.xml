@@ -5,99 +5,108 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@color/blue_500"
     tools:context=".HomeActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-
-        <SearchView
-            android:id="@+id/search"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="40dp"
-            android:background="@drawable/round_border"
-            android:focusable="true"
-            android:padding="20dp"
-            app:iconifiedByDefault="false"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_weight="1"
-            app:queryHint="검색어를 입력하시오" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <HorizontalScrollView
-            android:id="@+id/mainbookScroll"
-            android:layout_width="908dp"
-            android:layout_height="250dp"
-            android:background="@color/blue_300"
-            android:backgroundTint="@color/blue_300">
+
+            <SearchView
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="40dp"
+                android:background="@drawable/round_border"
+                android:focusable="true"
+                android:padding="20dp"
+                app:iconifiedByDefault="false"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_weight="1"
+                app:queryHint="검색어를 입력하시오">
+
+            </SearchView>
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
-        </HorizontalScrollView>
+                android:layout_weight="1"
+                android:text="ReadingBook"
+                android:textAlignment="viewStart"
+                android:textColorLink="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold|italic" />
 
-        <TextView
-            android:id="@+id/popBook"
-            android:layout_width="229dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/round_border"
-            android:text="인기 도서     "
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            <GridLayout
+                android:id="@+id/homegrid"
+                android:layout_width="397dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_border"
+                android:backgroundTint="@color/blue_200"
+                android:columnCount="3"
+                android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp"
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    android:backgroundTint="@color/blue_200"
+                    android:padding="8dp"
+                    tools:ignore="MissingConstraints"
+                    tools:listitem="@layout/item_book_image">
 
-            <EditText
-                android:id="@+id/EditPopBook1"
+                </androidx.recyclerview.widget.RecyclerView>
+            </GridLayout>
+
+            <TextView
+                android:id="@+id/popBook"
+                android:layout_width="229dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/round_border"
+                android:gravity="center"
+                android:text="인기 도서     "
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/PopBook"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:ems="10"
-                android:inputType="text"
-                android:layout_marginBottom="10dp"
-                android:text="Name" />
+                android:layout_height="267dp"
+                android:layout_row="0"
+                android:layout_column="0"
+                android:orientation="vertical"
+                android:padding="8dp"
+                tools:ignore="MissingConstraints"
+                tools:listitem="@layout/item_pop_book">
+            </androidx.recyclerview.widget.RecyclerView>
 
-            <EditText
-                android:id="@+id/EditPopBook2"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:ems="10"
-                android:inputType="text"
-                android:layout_marginBottom="10dp"
-                android:text="Name" />
-
-            <EditText
-                android:id="@+id/EditPopBook3"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:ems="10"
-                android:inputType="text"
-                android:layout_marginBottom="10dp"
-                android:text="Name" />
-
-            <EditText
-                android:id="@+id/EditPopBook4"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:ems="10"
-                android:inputType="text"
-                android:layout_marginBottom="10dp"
-                android:text="Name" />
 
         </LinearLayout>
+    </ScrollView>
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

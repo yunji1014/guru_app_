@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="26dp">
+        android:paddingTop="0dp">
 
         <ImageView
             android:id="@+id/book_cover"
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Start At: "
-                android:textSize="19sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/book_title"
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="도서명: "
-                android:textSize="19sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/book_author"
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="지은이: "
-                android:textSize="19sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/book_publisher"
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="출판사: "
-                android:textSize="19sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/book_isbn"
@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="ISBN: "
-                android:textSize="19sp" />
+                android:textSize="16sp" />
 
             <Button
                 android:id="@+id/complete_button"
@@ -71,6 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginTop="8dp"
+
                 android:text="완독" />
 
         </LinearLayout>
