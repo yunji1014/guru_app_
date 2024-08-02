@@ -47,14 +47,10 @@
             android:name=".ARFilter"
             android:exported="true" />
 
-
-
-
-
-
         <activity
             android:name=".SignupActivity"
-            android:exported="false" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
