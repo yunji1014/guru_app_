@@ -50,6 +50,28 @@ class MyPageActivity : AppCompatActivity() {
         setupDarkModeSwitch()
         setupEditProfileButton()
 
+        val navView: BottomNavigationView = findViewById(R.id.bottom_navigation)
+        navView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    true
+                }
+                R.id.navigation_bookshelf -> {
+                    startActivity(Intent(this, BookShelfActivity::class.java))
+                    true
+                }
+                R.id.navigation_arfilter -> {
+                    startActivity(Intent(this, ARFilter::class.java))
+                    true
+                }
+                R.id.navigation_mypage -> {
+                    startActivity(Intent(this, MyPageActivity::class.java))
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun loadStatistics() {
