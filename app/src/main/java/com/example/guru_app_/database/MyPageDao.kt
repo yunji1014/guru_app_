@@ -6,9 +6,10 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.guru_app_.BookDatabaseHelper
 
-class MyPageDao (context: Context) {
+class MyPageDao(context: Context) {
     private val dbHelper: SQLiteOpenHelper = BookDatabaseHelper(context)
 
+    // 사용자 프로필 저장
     fun saveUserProfile(userId: String, name: String, phoneNumber: String) {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -19,21 +20,23 @@ class MyPageDao (context: Context) {
         db.insertWithOnConflict("users", null, values, SQLiteDatabase.CONFLICT_REPLACE)
     }
 
+    // 사용자 프로필 로드
     fun loadUserProfile(userId: String): UserProfile? {
         val db = dbHelper.readableDatabase
-        val cursor = db.query("users", arrayOf("user_id", "name", "phone_number"), "user_id=?", arrayOf(userId), null, null, null)
+        val cursor = db.query("users", null, "user_id=?", arrayOf(userId), null, null, null)
         return if (cursor.moveToFirst()) {
             val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
             val phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow("phone_number"))
+            cursor.close()
             UserProfile(userId, name, phoneNumber)
         } else {
-            null
-        }.also {
             cursor.close()
+            null
         }
     }
 
-    fun saveStatistics(userId: String, month: String, booksRead: Int, genreStats: String) {
+    // 월간 통계 저장
+    fun saveMonthlyStatistics(userId: String, month: String, booksRead: Int, genreStats: String) {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
             put("user_id", userId)
@@ -44,37 +47,73 @@ class MyPageDao (context: Context) {
         db.insertWithOnConflict("statistics", null, values, SQLiteDatabase.CONFLICT_REPLACE)
     }
 
-    fun loadMonthlyStatistics(userId: String): List<MonthlyStatistic> {
+    // 월간 통계 로드
+    fun loadMonthlyStatistics(userId: String): List<MonthlyStatistics> {
         val db = dbHelper.readableDatabase
-        val cursor = db.query("statistics", arrayOf("month", "books_read"), "user_id=?", arrayOf(userId), null, null, null)
-        val statistics = mutableListOf<MonthlyStatistic>()
+        val cursor = db.query("statistics", null, "user_id=?", arrayOf(userId), null, null, null)
+        val statsList = mutableListOf<MonthlyStatistics>()
         while (cursor.moveToNext()) {
             val month = cursor.getString(cursor.getColumnIndexOrThrow("month"))
             val booksRead = cursor.getInt(cursor.getColumnIndexOrThrow("books_read"))
-            statistics.add(MonthlyStatistic(month, booksRead))
-        }
-        cursor.close()
-        return statistics
-    }
-
-    fun loadGenreStatistics(userId: String): Map<String, Float> {
-        val db = dbHelper.readableDatabase
-        val cursor = db.query("statistics", arrayOf("genre_stats"), "user_id=?", arrayOf(userId), null, null, null)
-        val genreStatsMap = mutableMapOf<String, Float>()
-        if (cursor.moveToFirst()) {
             val genreStats = cursor.getString(cursor.getColumnIndexOrThrow("genre_stats"))
-            // JSON 또는 CSV 형식을 파싱하여 Map으로 변환하는 로직 추가
-            genreStats.split(",").forEach {
-                val parts = it.split(":")
-                if (parts.size == 2) {
-                    genreStatsMap[parts[0]] = parts[1].toFloat()
-                }
-            }
+            statsList.add(MonthlyStatistics(userId, month, booksRead, genreStats))
         }
         cursor.close()
-        return genreStatsMap
+        return statsList
     }
 
-    data class UserProfile(val userId: String, val name: String, val phoneNumber: String)
-    data class MonthlyStatistic(val month: String, val booksRead: Int)
+    // 도서 정보 저장
+    fun saveBook(isbn: String, title: String, coverImage: String, category: String) {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put("isbn", isbn)
+            put("title", title)
+            put("cover_image", coverImage)
+            put("category", category)
+        }
+        db.insertWithOnConflict("books", null, values, SQLiteDatabase.CONFLICT_REPLACE)
+    }
+
+    // 사용자 도서 상태 저장
+    fun saveUserBookStatus(userId: String, isbn: String, status: String, rating: Int) {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put("user_id", userId)
+            put("isbn", isbn)
+            put("status", status)
+            put("rating", rating)
+        }
+        db.insertWithOnConflict("user_books", null, values, SQLiteDatabase.CONFLICT_REPLACE)
+    }
+
+    // 사용자 도서 상태 로드
+    fun loadUserBooks(userId: String): List<UserBook> {
+        val db = dbHelper.readableDatabase
+        val cursor = db.query("user_books", null, "user_id=?", arrayOf(userId), null, null, null)
+        val userBooksList = mutableListOf<UserBook>()
+        while (cursor.moveToNext()) {
+            val isbn = cursor.getString(cursor.getColumnIndexOrThrow("isbn"))
+            val status = cursor.getString(cursor.getColumnIndexOrThrow("status"))
+            val rating = cursor.getInt(cursor.getColumnIndexOrThrow("rating"))
+            userBooksList.add(UserBook(userId, isbn, status, rating))
+        }
+        cursor.close()
+        return userBooksList
+    }
+
+
+    // 월간 통계 업데이트
+    fun updateMonthlyStatistics(userId: String, month: String, booksRead: Int, genreStats: String) {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put("books_read", booksRead)
+            put("genre_stats", genreStats)
+        }
+        db.update("statistics", values, "user_id=? AND month=?", arrayOf(userId, month))
+    }
 }
+
+// 데이터 클래스 정의
+data class UserProfile(val userId: String, val name: String, val phoneNumber: String)
+data class MonthlyStatistics(val userId: String, val month: String, val booksRead: Int, val genreStats: String)
+data class UserBook(val userId: String, val isbn: String, val status: String, val rating: Int)

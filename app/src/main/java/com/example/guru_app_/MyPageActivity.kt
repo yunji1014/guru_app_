@@ -1,5 +1,6 @@
 package com.example.guru_app_
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
@@ -8,6 +9,7 @@ import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.guru_app_.shelf.BookShelfActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.BarData
@@ -16,6 +18,7 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MyPageActivity : AppCompatActivity() {
@@ -46,6 +49,29 @@ class MyPageActivity : AppCompatActivity() {
         loadStatistics()
         setupDarkModeSwitch()
         setupEditProfileButton()
+
+        val navView: BottomNavigationView = findViewById(R.id.bottom_navigation)
+        navView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    true
+                }
+                R.id.navigation_bookshelf -> {
+                    startActivity(Intent(this, BookShelfActivity::class.java))
+                    true
+                }
+                R.id.navigation_arfilter -> {
+                    startActivity(Intent(this, ARFilter::class.java))
+                    true
+                }
+                R.id.navigation_mypage -> {
+                    startActivity(Intent(this, MyPageActivity::class.java))
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun loadStatistics() {
