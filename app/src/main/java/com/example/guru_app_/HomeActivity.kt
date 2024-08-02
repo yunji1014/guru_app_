@@ -96,13 +96,11 @@ class HomeActivity : AppCompatActivity() {
         val start = 1
         val searchTarget = "Book"
 
-        Toast.makeText(this, "Starting API call", Toast.LENGTH_SHORT).show()
-
         RetrofitClient.instance.getBestsellers(apiKey, queryType, maxResults, start, searchTarget)
             .enqueue(object : Callback<BestsellerResponse> {
                 override fun onResponse(call: Call<BestsellerResponse>, response: Response<BestsellerResponse>) {
                     if (response.isSuccessful) {
-                        Toast.makeText(this@HomeActivity, "API call successful", Toast.LENGTH_SHORT).show()
+
                         val books = response.body()?.items ?: mutableListOf()
                         bestsellerAdapter = PopBookAdapter(books)
                         popBook.adapter = bestsellerAdapter
