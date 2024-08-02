@@ -106,12 +106,10 @@ class HomeActivity : AppCompatActivity() {
                         popBook.adapter = bestsellerAdapter
                     } else {
                         val errorBody = response.errorBody()?.string()
-                        //Toast.makeText(this@HomeActivity, "API call failed: ${response.code()} - $errorBody", Toast.LENGTH_LONG).show()
                     }
                 }
 
                 override fun onFailure(call: Call<BestsellerResponse>, t: Throwable) {
-                    //Toast.makeText(this@HomeActivity, "API call failed: ${t.message}", Toast.LENGTH_LONG).show()
                 }
             })
     }
