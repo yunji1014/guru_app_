@@ -67,6 +67,11 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
+        // 기본 화면 설정
+        if (savedInstanceState == null) {
+            navView.selectedItemId = R.id.navigation_home
+        }
+
         val search = findViewById<SearchView>(R.id.search)
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
