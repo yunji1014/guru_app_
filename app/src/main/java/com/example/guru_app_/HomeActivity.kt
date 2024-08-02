@@ -2,6 +2,7 @@ package com.example.guru_app_
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -87,6 +88,16 @@ class HomeActivity : AppCompatActivity() {
                 return false
             }
         })
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("HomeActivity", "onStop called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("HomeActivity", "onDestroy called")
     }
 
     private fun fetchBestsellers() {
