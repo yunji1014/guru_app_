@@ -60,7 +60,6 @@
             android:layout_marginBottom="30dp"
             android:background="@drawable/outline"
             android:inputType="textPassword"
-            android:singleLine="true"
             android:hint="  비밀번호" />
     </LinearLayout>
 
@@ -93,7 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/forgot"
-            android:textSize="15dp">
+            android:textSize="15sp">
 
         </TextView>
 
@@ -104,7 +103,7 @@
             android:layout_weight="1"
             android:gravity="right"
             android:text="Sign Up"
-            android:textSize="15dp">
+            android:textSize="15sp">
 
         </TextView>
     </LinearLayout>
