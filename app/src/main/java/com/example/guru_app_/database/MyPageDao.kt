@@ -101,23 +101,6 @@ class MyPageDao(context: Context) {
         return userBooksList
     }
 
-    // 도서 평점 업데이트
-    fun updateBookRating(userId: String, isbn: String, rating: Float) {
-        val db = dbHelper.writableDatabase
-        val values = ContentValues().apply {
-            put("rating", rating)
-        }
-        db.update("user_books", values, "user_id=? AND isbn=?", arrayOf(userId, isbn))
-    }
-
-    // 도서 상태 업데이트
-    fun updateBookStatus(userId: String, isbn: String, status: String) {
-        val db = dbHelper.writableDatabase
-        val values = ContentValues().apply {
-            put("status", status)
-        }
-        db.update("user_books", values, "user_id=? AND isbn=?", arrayOf(userId, isbn))
-    }
 
     // 월간 통계 업데이트
     fun updateMonthlyStatistics(userId: String, month: String, booksRead: Int, genreStats: String) {
