@@ -67,6 +67,11 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
+        // 기본 화면 설정
+        if (savedInstanceState == null) {
+            navView.selectedItemId = R.id.navigation_home
+        }
+
         val search = findViewById<SearchView>(R.id.search)
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -91,24 +96,20 @@ class HomeActivity : AppCompatActivity() {
         val start = 1
         val searchTarget = "Book"
 
-        Toast.makeText(this, "Starting API call", Toast.LENGTH_SHORT).show()
-
         RetrofitClient.instance.getBestsellers(apiKey, queryType, maxResults, start, searchTarget)
             .enqueue(object : Callback<BestsellerResponse> {
                 override fun onResponse(call: Call<BestsellerResponse>, response: Response<BestsellerResponse>) {
                     if (response.isSuccessful) {
-                        Toast.makeText(this@HomeActivity, "API call successful", Toast.LENGTH_SHORT).show()
+
                         val books = response.body()?.items ?: mutableListOf()
                         bestsellerAdapter = PopBookAdapter(books)
                         popBook.adapter = bestsellerAdapter
                     } else {
                         val errorBody = response.errorBody()?.string()
-                        //Toast.makeText(this@HomeActivity, "API call failed: ${response.code()} - $errorBody", Toast.LENGTH_LONG).show()
                     }
                 }
 
                 override fun onFailure(call: Call<BestsellerResponse>, t: Throwable) {
-                    //Toast.makeText(this@HomeActivity, "API call failed: ${t.message}", Toast.LENGTH_LONG).show()
                 }
             })
     }

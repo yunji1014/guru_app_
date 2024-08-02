@@ -41,7 +41,12 @@ android {
 
 dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-simplexml:2.9.0")
+    implementation (libs.converter.simplexml)
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.storage.ktx)
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+
     implementation (libs.androidx.recyclerview.v121)
     implementation (libs.gson)
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
