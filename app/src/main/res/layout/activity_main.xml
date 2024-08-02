@@ -59,6 +59,8 @@
             android:layout_height="40dp"
             android:layout_marginBottom="30dp"
             android:background="@drawable/outline"
+            android:inputType="textPassword"
+            android:singleLine="true"
             android:hint="  비밀번호" />
     </LinearLayout>
 
