@@ -1,16 +1,21 @@
 package com.example.guru_app_
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.guru_app_.shelf.BookShelfActivity
+import com.example.guru_app_.database.MyPageDao
+import com.example.guru_app_.database.UserProfile
+import com.example.guru_app_.database.MonthlyStatistics
+import com.example.guru_app_.database.UserBook
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.BarData
@@ -20,8 +25,6 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.bumptech.glide.Glide
 
 class MyPageActivity : AppCompatActivity() {
@@ -36,8 +39,7 @@ class MyPageActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var imgProfile: ImageView
 
-    private val db = FirebaseFirestore.getInstance()
-    private val storage = FirebaseStorage.getInstance()
+    private lateinit var myPageDao: MyPageDao
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +58,8 @@ class MyPageActivity : AppCompatActivity() {
 
         edtID.isEnabled = false  // Disable the ID field
 
+        myPageDao = MyPageDao(this)
+
         loadUserProfile()
         loadStatistics()
         setupDarkModeSwitch()
@@ -64,48 +68,52 @@ class MyPageActivity : AppCompatActivity() {
 
     private fun loadUserProfile() {
         val userId = "some_user_id" // Replace with the actual user ID
-        db.collection("users").document(userId).get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    edtName.setText(document.getString("name"))
-                    edtID.setText(document.getString("id"))
-                    edtTel.setText(document.getString("tel"))
-                    val profileUrl = document.getString("profileUrl")
-                    if (profileUrl != null && profileUrl.isNotEmpty()) {
-                        Glide.with(this).load(profileUrl).into(imgProfile)
-                    }
-                }
-            }
+        val userProfile = myPageDao.loadUserProfile(userId)
+        userProfile?.let {
+            edtName.setText(it.name)
+            edtID.setText(it.userId)
+            edtTel.setText(it.phoneNumber)
+            // Load the profile image using Glide if the path or URL is available in userProfile
+            // For example, if profileUrl is stored in userProfile:
+            // Glide.with(this).load(userProfile.profileUrl).into(imgProfile)
+        }
     }
 
     private fun loadStatistics() {
-        // Replace with your actual user ID
-        val userId = "some_user_id"
+        val userId = "some_user_id" // Replace with the actual user ID
+        val statistics = myPageDao.loadMonthlyStatistics(userId)
+        val userBooks = myPageDao.loadUserBooks(userId)
 
-        db.collection("users").document(userId).collection("statistics").get()
-            .addOnSuccessListener { result ->
-                val barEntries = ArrayList<BarEntry>()
-                val pieEntries = ArrayList<PieEntry>()
+        val barEntries = ArrayList<BarEntry>()
+        val genreCounts = mutableMapOf<String, Int>()
 
-                for (document in result) {
-                    val type = document.getString("type")
-                    if (type == "monthly") {
-                        barEntries.add(BarEntry(document.getDouble("month")!!.toFloat(), document.getDouble("value")!!.toFloat()))
-                    } else if (type == "genre") {
-                        pieEntries.add(PieEntry(document.getDouble("percentage")!!.toFloat(), document.getString("label")!!))
-                    }
-                }
+        statistics.forEachIndexed { index, stat ->
+            Log.d("MyPageActivity", "Month: ${stat.month}, BooksRead: ${stat.booksRead}")
+            barEntries.add(BarEntry(index.toFloat(), stat.booksRead.toFloat()))
+        }
 
-                val barDataSet = BarDataSet(barEntries, "월간 통계")
-                val barData = BarData(barDataSet)
-                barChart.data = barData
-                barChart.invalidate()
-
-                val pieDataSet = PieDataSet(pieEntries, "도서 분야 통계")
-                val pieData = PieData(pieDataSet)
-                pieChart.data = pieData
-                pieChart.invalidate()
+        userBooks.forEach { userBook ->
+            val book = myPageDao.loadBook(userBook.isbn)
+            book?.let {
+                Log.d("MyPageActivity", "Book Category: ${it.category}")
+                genreCounts[it.category] = genreCounts.getOrDefault(it.category, 0) + 1
             }
+        }
+
+        val barDataSet = BarDataSet(barEntries, "월간 통계")
+        val barData = BarData(barDataSet)
+        barChart.data = barData
+        barChart.invalidate()
+
+        val pieEntries = ArrayList<PieEntry>()
+        genreCounts.forEach { (genre, count) ->
+            pieEntries.add(PieEntry(count.toFloat(), genre))
+        }
+
+        val pieDataSet = PieDataSet(pieEntries, "도서 분야 통계")
+        val pieData = PieData(pieDataSet)
+        pieChart.data = pieData
+        pieChart.invalidate()
     }
 
     private fun setupDarkModeSwitch() {
@@ -133,35 +141,28 @@ class MyPageActivity : AppCompatActivity() {
             val id = edtID.text.toString()
             val tel = edtTel.text.toString()
 
-            // 여기에 데이터베이스나 SharedPreferences를 사용하여 변경된 정보를 저장하는 코드를 추가합니다.
             val userId = "some_user_id" // Replace with the actual user ID
 
-            val profileUpdates = hashMapOf(
-                "name" to name,
-                "tel" to tel
-            )
-
-            db.collection("users").document(userId).update(profileUpdates as Map<String, Any>)
-                .addOnSuccessListener {
-                    // Profile updated successfully
-                }
-                .addOnFailureListener {
-                    // Handle failure
-                }
+            // Update user profile in SQLite database
+            myPageDao.saveUserProfile(userId, name, tel)
 
             // Handle profile image upload if changed
             val profileImageUri: Uri? = null // Get the URI of the new profile image if available
             if (profileImageUri != null) {
-                val storageRef = storage.reference.child("profile_images/$userId.jpg")
-                storageRef.putFile(profileImageUri)
-                    .addOnSuccessListener {
-                        storageRef.downloadUrl.addOnSuccessListener { uri ->
-                            db.collection("users").document(userId).update("profileUrl", uri.toString())
-                        }
-                    }
+                // Save the profile image locally or to a server if needed and update the user profile with the new image URL/path
+                // Example:
+                // val profileImagePath = saveProfileImage(profileImageUri)
+                // myPageDao.updateUserProfileImage(userId, profileImagePath)
             }
         }
     }
+
+    // Add a function to save the profile image if necessary
+    // private fun saveProfileImage(uri: Uri): String {
+    //     // Implement logic to save the image locally or to a server and return the path/URL
+    // }
 }
+
+
 
 
