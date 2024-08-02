@@ -1,5 +1,6 @@
 [versions]
 agp = "8.5.1"
+converterSimplexml = "2.9.0"
 gson = "2.10.1"
 kotlin = "1.9.0"
 coreKtx = "1.10.1"
@@ -18,10 +19,13 @@ glide = "5.0.0-rc01"
 recyclerview = "1.3.2"
 recyclerviewVersion = "1.2.1"
 supportAnnotations = "28.0.0"
+firebaseFirestoreKtx = "25.0.0"
+firebaseStorageKtx = "21.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-recyclerview-v121 = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerviewVersion" }
+converter-simplexml = { module = "com.squareup.retrofit2:converter-simplexml", version.ref = "converterSimplexml" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -37,6 +41,8 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 support-annotations = { group = "com.android.support", name = "support-annotations", version.ref = "supportAnnotations" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
