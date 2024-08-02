@@ -132,7 +132,8 @@
                 android:layout_height="wrap_content"
                 android:text="다크모드 전환"
                 android:layout_gravity="left"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="8dp" >
+            </Switch>
 
         </LinearLayout>
     </ScrollView>

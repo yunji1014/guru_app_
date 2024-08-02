@@ -3,7 +3,6 @@ package com.example.guru_app_
 import android.content.Intent
 import android.os.Bundle
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -67,11 +66,6 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
-        // 기본 화면 설정
-        if (savedInstanceState == null) {
-            navView.selectedItemId = R.id.navigation_home
-        }
-
         val search = findViewById<SearchView>(R.id.search)
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -100,7 +94,6 @@ class HomeActivity : AppCompatActivity() {
             .enqueue(object : Callback<BestsellerResponse> {
                 override fun onResponse(call: Call<BestsellerResponse>, response: Response<BestsellerResponse>) {
                     if (response.isSuccessful) {
-
                         val books = response.body()?.items ?: mutableListOf()
                         bestsellerAdapter = PopBookAdapter(books)
                         popBook.adapter = bestsellerAdapter
