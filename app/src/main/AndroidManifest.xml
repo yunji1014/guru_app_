@@ -47,8 +47,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-
-
         <activity
             android:name=".ARFilter"
             android:exported="true" />
