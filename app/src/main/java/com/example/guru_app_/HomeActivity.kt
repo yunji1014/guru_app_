@@ -87,7 +87,7 @@ class HomeActivity : AppCompatActivity() {
     private fun fetchBestsellers() {
         val apiKey = "ttb1014jiye1521001"
         val queryType = "Bestseller"
-        val maxResults = 10
+        val maxResults = 5
         val start = 1
         val searchTarget = "Book"
 
@@ -103,12 +103,12 @@ class HomeActivity : AppCompatActivity() {
                         popBook.adapter = bestsellerAdapter
                     } else {
                         val errorBody = response.errorBody()?.string()
-                        Toast.makeText(this@HomeActivity, "API call failed: ${response.code()} - $errorBody", Toast.LENGTH_LONG).show()
+                        //Toast.makeText(this@HomeActivity, "API call failed: ${response.code()} - $errorBody", Toast.LENGTH_LONG).show()
                     }
                 }
 
                 override fun onFailure(call: Call<BestsellerResponse>, t: Throwable) {
-                    Toast.makeText(this@HomeActivity, "API call failed: ${t.message}", Toast.LENGTH_LONG).show()
+                    //Toast.makeText(this@HomeActivity, "API call failed: ${t.message}", Toast.LENGTH_LONG).show()
                 }
             })
     }
