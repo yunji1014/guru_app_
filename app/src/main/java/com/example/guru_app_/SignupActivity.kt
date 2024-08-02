@@ -29,7 +29,7 @@ class SignupActivity : AppCompatActivity() {
     lateinit var mail: EditText
     var CheckId: Boolean = false
 
-    public override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         val view = currentFocus
         if (view != null && (ev.action == MotionEvent.ACTION_UP || ev.action == MotionEvent.ACTION_MOVE) && view is EditText
             && !view.javaClass.name.startsWith("android.webkit.")) {
