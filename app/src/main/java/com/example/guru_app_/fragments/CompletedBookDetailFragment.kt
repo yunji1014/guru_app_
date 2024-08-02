@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.guru_app_.R
 import com.example.guru_app_.database.BookDao
 import com.example.guru_app_.models.Book
@@ -41,6 +43,12 @@ class CompletedBookDetailFragment : Fragment() {
             view.findViewById<TextView>(R.id.start_date).text = "Start Date: ${it.startDate}"
             view.findViewById<TextView>(R.id.end_date).text = "End Date: ${it.endDate}"
             view.findViewById<RatingBar>(R.id.book_rating).rating = it.rating ?: 0f
+            val bookCover = view.findViewById<ImageView>(R.id.book_cover)
+            if (!it.coverImage.isNullOrEmpty()) {
+                Glide.with(this).load(it.coverImage).into(bookCover)
+            } else {
+                bookCover.setImageResource(android.R.drawable.ic_menu_gallery)
+            }
         }
     }
 

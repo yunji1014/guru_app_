@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.guru_app_.R
 import com.example.guru_app_.database.BookDao
 import com.example.guru_app_.models.Book
@@ -43,6 +45,13 @@ class ReadingBookDetailFragment : Fragment() {
             view.findViewById<TextView>(R.id.start_date).text = "Start At: ${it.startDate}"
             view.findViewById<TextView>(R.id.book_publisher).text = "출판사: ${it.publisher}"
             view.findViewById<TextView>(R.id.book_isbn).text = "ISBN: ${it.isbn}"
+
+            val bookCover = view.findViewById<ImageView>(R.id.book_cover)
+            if (!it.coverImage.isNullOrEmpty()) {
+                Glide.with(this).load(it.coverImage).into(bookCover)
+            } else {
+                bookCover.setImageResource(android.R.drawable.ic_menu_gallery)
+            }
         }
 
         view.findViewById<Button>(R.id.complete_button).setOnClickListener {

@@ -69,6 +69,11 @@ class BookMemoActivity : AppCompatActivity(), MemoListFragment.MemoItemClickList
             intent.putExtra("BOOK_ID", bookId)
             memoDetailLauncher.launch(intent)
         }
+        // 뒤로가기 버튼 클릭 리스너 추가
+        findViewById<ImageButton>(R.id.back_button).setOnClickListener {
+            onBackPressed()
+        }
+
     }
 
     override fun onMemoItemClick(memoId: Int) {
