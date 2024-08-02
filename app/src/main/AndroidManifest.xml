@@ -20,6 +20,10 @@
             android:name=".FindPasswordActivity"
             android:exported="false" />
         <activity
+            android:name=".TestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BookShelfActivity"
             android:name=".FindPWActivity"
             android:exported="false" />
         <activity
@@ -57,14 +61,10 @@
             android:name=".ARFilter"
             android:exported="true" />
 
-
-
-
-
-
         <activity
             android:name=".SignupActivity"
-            android:exported="false" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
