@@ -52,6 +52,26 @@ class BookDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
             );
         """
 
+        private const val CREATE_USERS_TABLE = """
+            CREATE TABLE users (
+                user_id TEXT PRIMARY KEY,
+                name TEXT,
+                phone_number TEXT
+            );
+        """
+
+        private const val CREATE_USER_BOOKS_TABLE = """
+            CREATE TABLE user_books (
+                user_id TEXT,
+                isbn TEXT,
+                status TEXT,
+                rating INTEGER,
+                FOREIGN KEY (user_id) REFERENCES users (user_id),
+                FOREIGN KEY (isbn) REFERENCES books (isbn),
+                PRIMARY KEY (user_id, isbn)
+            )
+        """
+
 
 
     }
@@ -63,11 +83,15 @@ class BookDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         db.execSQL(CREATE_BOOKS_TABLE)
         db.execSQL(CREATE_MEMOS_TABLE)
         db.execSQL(CREATE_STATISTICS_TABLE)
+        db.execSQL(CREATE_USERS_TABLE)
+        db.execSQL(CREATE_USER_BOOKS_TABLE)
     }
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS memos")
         db.execSQL("DROP TABLE IF EXISTS books")
         db.execSQL("DROP TABLE IF EXISTS Statistics")
+        db.execSQL("DROP TABLE IF EXISTS users")
+        db.execSQL("DROP TABLE IF EXISTS user_books")
         onCreate(db)
     }
 
