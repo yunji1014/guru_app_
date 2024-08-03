@@ -10,26 +10,38 @@ import com.example.guru_app_.models.Book
 class MyPageDao(context: Context) {
     private val dbHelper: SQLiteOpenHelper = BookDatabaseHelper(context)
 
-    // Load monthly statistics (dummy implementation)
+    // Load monthly statistics
     fun loadMonthlyStatistics(userId: String): List<Statistic> {
-        // Implement actual logic here to retrieve statistics from the database
-        return listOf(
-            Statistic("January", 5),
-            Statistic("February", 8)
-            // Add more dummy data or fetch from the database
+        val db = dbHelper.readableDatabase
+        val cursor = db.query(
+            "Statistics", null, "user_id=?", arrayOf(userId),
+            null, null, null
         )
+        val statistics = mutableListOf<Statistic>()
+        with(cursor) {
+            while (moveToNext()) {
+                val statistic = Statistic(
+                    getString(getColumnIndexOrThrow("month")),
+                    getInt(getColumnIndexOrThrow("books_read"))
+                )
+                statistics.add(statistic)
+            }
+        }
+        cursor.close()
+        db.close()
+        return statistics
     }
 
     // Load user books
     fun loadUserBooks(userId: String): List<UserBook> {
         val db = dbHelper.readableDatabase
-        val cursor = db.query("user_books", null, "userId=?", arrayOf(userId), null, null, null)
+        val cursor = db.query("user_books", null, "user_id=?", arrayOf(userId), null, null, null)
         val userBooks = mutableListOf<UserBook>()
         with(cursor) {
             while (moveToNext()) {
                 val userBook = UserBook(
                     getInt(getColumnIndexOrThrow("id")),
-                    getString(getColumnIndexOrThrow("userId")),
+                    getString(getColumnIndexOrThrow("user_id")),
                     getString(getColumnIndexOrThrow("isbn")),
                     getString(getColumnIndexOrThrow("status"))
                 )
@@ -41,7 +53,7 @@ class MyPageDao(context: Context) {
         return userBooks
     }
 
-    // 사용자 프로필 저장
+    // Save user profile
     fun saveUserProfile(userId: String, name: String, phoneNumber: String) {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -50,23 +62,24 @@ class MyPageDao(context: Context) {
             put("phone_number", phoneNumber)
         }
         db.insertWithOnConflict("users", null, values, SQLiteDatabase.CONFLICT_REPLACE)
+        db.close()
     }
 
-    // 사용자 프로필 로드
+    // Load user profile
     fun loadUserProfile(userId: String): UserProfile? {
         val db = dbHelper.readableDatabase
         val cursor = db.query("users", null, "user_id=?", arrayOf(userId), null, null, null)
         return if (cursor.moveToFirst()) {
             val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
             val phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow("phone_number"))
+            val profileUrl = cursor.getString(cursor.getColumnIndexOrThrow("profile_url"))
             cursor.close()
-            UserProfile(userId, name, phoneNumber)
+            UserProfile(userId, name, phoneNumber, profileUrl)
         } else {
             cursor.close()
             null
         }
     }
-
 
     // Load book by ISBN
     fun loadBook(isbn: String): Book? {
@@ -97,7 +110,7 @@ class MyPageDao(context: Context) {
         return book
     }
 
-    data class UserProfile(val userId: String, val name: String, val phoneNumber: String)
+    data class UserProfile(val userId: String, val name: String, val phoneNumber: String, val profileUrl: String?)
     data class Statistic(val month: String, val booksRead: Int)
     data class UserBook(val id: Int, val userId: String, val isbn: String, val status: String)
 }

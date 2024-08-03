@@ -1,16 +1,18 @@
 package com.example.guru_app_
 
+
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.Glide
+import com.example.guru_app_.R
 import com.example.guru_app_.database.MyPageDao
+import com.example.guru_app_.database.BookDao
 import com.example.guru_app_.shelf.BookShelfActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
@@ -35,6 +37,7 @@ class MyPageActivity : AppCompatActivity() {
     private lateinit var imgProfile: ImageView
 
     private lateinit var myPageDao: MyPageDao
+    private lateinit var bookDao: BookDao
     private lateinit var userId: String
 
     @SuppressLint("MissingInflatedId")
@@ -77,7 +80,8 @@ class MyPageActivity : AppCompatActivity() {
         edtID.isEnabled = false  // Disable the ID field
 
         myPageDao = MyPageDao(this)
-        userId = "some_user_id"
+        bookDao = BookDao(this)
+        userId = "some_user_id" // 실제 사용자 ID로 변경 필요
 
         loadUserProfile()
         loadStatistics()
@@ -86,7 +90,6 @@ class MyPageActivity : AppCompatActivity() {
     }
 
     private fun loadUserProfile() {
-        val userId = "some_user_id" // Replace with the actual user ID
         val userProfile = myPageDao.loadUserProfile(userId)
         userProfile?.let {
             edtName.setText(it.name)
@@ -95,9 +98,7 @@ class MyPageActivity : AppCompatActivity() {
             edtTel.isEnabled = false
             edtID.isEnabled = false
             edtName.isEnabled = false
-            // Load the profile image using Glide if the path or URL is available in userProfile
-            // For example, if profileUrl is stored in userProfile:
-            // Glide.with(this).load(userProfile.profileUrl).into(imgProfile)
+            Glide.with(this).load(it.profileUrl).into(imgProfile)
         }
     }
 
@@ -118,7 +119,7 @@ class MyPageActivity : AppCompatActivity() {
         }
 
         userBooks.forEach { userBook ->
-            val book = myPageDao.loadBook(userBook.isbn)
+            val book = bookDao.getBookById(userBook.id)
             book?.let {
                 genreCounts[it.publisher] = genreCounts.getOrDefault(it.publisher, 0) + 1
             }
@@ -167,12 +168,8 @@ class MyPageActivity : AppCompatActivity() {
             val id = edtID.text.toString()
             val tel = edtTel.text.toString()
 
-            val userId = "some_user_id" // Replace with the actual user ID
-
-            // Update user profile in SQLite database
             myPageDao.saveUserProfile(userId, name, tel)
 
-            // Handle profile image upload if changed
             val profileImageUri: Uri? = null // Get the URI of the new profile image if available
             if (profileImageUri != null) {
                 // Save the profile image locally or to a server if needed and update the user profile with the new image URL/path
@@ -188,8 +185,3 @@ class MyPageActivity : AppCompatActivity() {
     //     // Implement logic to save the image locally or to a server and return the path/URL
     // }
 }
-
-
-
-
-
