@@ -6,13 +6,16 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Switch
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.Glide
-import com.example.guru_app_.R
-import com.example.guru_app_.database.MyPageDao
 import com.example.guru_app_.database.BookDao
+import com.example.guru_app_.database.MyPageDao
 import com.example.guru_app_.shelf.BookShelfActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
@@ -39,6 +42,7 @@ class MyPageActivity : AppCompatActivity() {
     private lateinit var myPageDao: MyPageDao
     private lateinit var bookDao: BookDao
     private lateinit var userId: String
+    private lateinit var userMail: String
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +50,9 @@ class MyPageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_my_page)
 
         val navView: BottomNavigationView = findViewById(R.id.bottom_navigation)
+        val preferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+        val usermail = preferences.getString("usermail", "")
+
         navView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
@@ -82,6 +89,7 @@ class MyPageActivity : AppCompatActivity() {
         myPageDao = MyPageDao(this)
         bookDao = BookDao(this)
         userId = "some_user_id" // 실제 사용자 ID로 변경 필요
+        userMail = usermail + ""
 
         loadUserProfile()
         loadStatistics()
@@ -90,15 +98,15 @@ class MyPageActivity : AppCompatActivity() {
     }
 
     private fun loadUserProfile() {
-        val userProfile = myPageDao.loadUserProfile(userId)
+        val userProfile = myPageDao.loadUserProfile(userMail)
         userProfile?.let {
             edtName.setText(it.name)
             edtID.setText(it.userId)
-            edtTel.setText(it.phoneNumber)
+            edtTel.setText(it.birth)
             edtTel.isEnabled = false
             edtID.isEnabled = false
             edtName.isEnabled = false
-            Glide.with(this).load(it.profileUrl).into(imgProfile)
+            //Glide.with(this).load(it.profileUrl).into(imgProfile)
         }
     }
 

@@ -5,10 +5,12 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.guru_app_.BookDatabaseHelper
+import com.example.guru_app_.DBHelper
 import com.example.guru_app_.models.Book
 
 class MyPageDao(context: Context) {
     private val dbHelper: SQLiteOpenHelper = BookDatabaseHelper(context)
+    private val dbHelper2: SQLiteOpenHelper = DBHelper(context)
 
     // Load monthly statistics
     fun loadMonthlyStatistics(userId: String): List<Statistic> {
@@ -66,15 +68,16 @@ class MyPageDao(context: Context) {
     }
 
     // Load user profile
-    fun loadUserProfile(userId: String): UserProfile? {
-        val db = dbHelper.readableDatabase
-        val cursor = db.query("users", null, "user_id=?", arrayOf(userId), null, null, null)
+    fun loadUserProfile(userMail: String): UserProfile? {
+        val db = dbHelper2.readableDatabase
+        val cursor = db.query("users", null, "mail=?", arrayOf(userMail), null, null, null)
         return if (cursor.moveToFirst()) {
+            val userId = cursor.getString(cursor.getColumnIndexOrThrow("id"))
             val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
-            val phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow("phone_number"))
-            val profileUrl = cursor.getString(cursor.getColumnIndexOrThrow("profile_url"))
+            val birth = cursor.getString(cursor.getColumnIndexOrThrow("birth"))
+            //val profileUrl = cursor.getString(cursor.getColumnIndexOrThrow("photo"))
             cursor.close()
-            UserProfile(userId, name, phoneNumber, profileUrl)
+            UserProfile(userId, name, birth)//, profileUrl)
         } else {
             cursor.close()
             null
@@ -110,7 +113,7 @@ class MyPageDao(context: Context) {
         return book
     }
 
-    data class UserProfile(val userId: String, val name: String, val phoneNumber: String, val profileUrl: String?)
+    data class UserProfile(val userId: String, val name: String, val birth: String)//, val profileUrl: String?)
     data class Statistic(val month: String, val booksRead: Int)
     data class UserBook(val id: Int, val userId: String, val isbn: String, val status: String)
 }

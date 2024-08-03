@@ -43,8 +43,6 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -74,6 +72,10 @@ class MainActivity : AppCompatActivity() {
                 if (check == true){
                     Toast.makeText(this@MainActivity,
                         "로그인 되었습니다.", Toast.LENGTH_SHORT).show()
+                    val preferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+                    val editor = preferences.edit()
+                    editor.putString("usermail", mail);
+                    editor.apply();
 
                     val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)
