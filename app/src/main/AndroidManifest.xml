@@ -30,7 +30,9 @@
             tools:ignore="DuplicateActivity" />
         <activity
             android:name=".HomeActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:configChanges="orientation|screenSize|smallestScreenSize"/>
+
 
         <activity
             android:name=".activities.BookMemoActivity"

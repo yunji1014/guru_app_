@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class BookDao(context: Context) {
+class BookDao(context: Context)  {
     private val dbHelper: SQLiteOpenHelper = BookDatabaseHelper(context)
 
     fun addBook(book: Book) {
