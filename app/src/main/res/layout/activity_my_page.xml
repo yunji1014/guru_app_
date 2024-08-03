@@ -103,20 +103,20 @@
                 tools:ignore="MissingClass" />
 
             <!-- 도서 분야 통계 섹션 -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp"
-                android:text="도서 분야 통계"
-                android:textColor="#196191"
-                android:textSize="18sp" />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:paddingTop="16dp"-->
+<!--                android:paddingBottom="8dp"-->
+<!--                android:text="도서 분야 통계"-->
+<!--                android:textColor="#196191"-->
+<!--                android:textSize="18sp" />-->
 
-            <com.github.mikephil.charting.charts.PieChart
-                android:id="@+id/pieChart"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                tools:ignore="MissingClass" />
+<!--            <com.github.mikephil.charting.charts.PieChart-->
+<!--                android:id="@+id/pieChart"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="200dp"-->
+<!--                tools:ignore="MissingClass" />-->
 
             <!-- 다크모드 전환 섹션 -->
             <TextView

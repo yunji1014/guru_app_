@@ -27,7 +27,8 @@ class BookDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 start_date TEXT,
                 end_date TEXT,
                 rating REAL,
-                status TEXT NOT NULL DEFAULT 'reading'
+                status TEXT NOT NULL DEFAULT 'reading',
+                genre TEXT
             );
         """
 
