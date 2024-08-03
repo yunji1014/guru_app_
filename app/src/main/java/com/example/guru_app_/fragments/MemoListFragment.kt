@@ -2,6 +2,7 @@ package com.example.guru_app_.fragments
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.guru_app_.R
+import com.example.guru_app_.activities.MemoDetailActivity
 import com.example.guru_app_.adapters.MemoListAdapter
 import com.example.guru_app_.adapters.RecyclerItemClickListener
 import com.example.guru_app_.database.MemoDao
@@ -59,7 +61,11 @@ class MemoListFragment : Fragment() {
                 RecyclerItemClickListener.OnItemClickListener {
                 override fun onItemClick(view: View, position: Int) {
                     val memo = memoListAdapter.getMemoAt(position)
-                    listener?.onMemoItemClick(memo.id ?: -1)
+                    val intent = Intent(activity, MemoDetailActivity::class.java).apply {
+                        putExtra("MEMO_ID", memo.id)
+                        putExtra("BOOK_ID", bookId)
+                    }
+                    startActivity(intent)
                 }
 
                 override fun onLongItemClick(view: View, position: Int) {
@@ -103,3 +109,6 @@ class MemoListFragment : Fragment() {
             }
     }
 }
+
+
+

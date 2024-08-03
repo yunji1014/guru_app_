@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+
 
     <application
         android:allowBackup="true"
@@ -35,11 +40,12 @@
             android:exported="false"
             android:configChanges="orientation|screenSize|smallestScreenSize"/>
 
-
         <activity
             android:name=".activities.BookMemoActivity"
             android:exported="true" />
-        <activity android:name=".activities.MemoDetailActivity" />
+
+        <activity android:name=".activities.MemoDetailActivity"
+            android:exported="true"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -66,6 +72,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- OnBackInvokedCallback 설정 추가 -->
+        <meta-data
+            android:name="android:enableOnBackInvokedCallback"
+            android:value="true" />
+
     </application>
-    <uses-permission android:name="android.permission.INTERNET"/>
+
 </manifest>
