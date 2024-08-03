@@ -49,6 +49,8 @@ class MyPageActivity : AppCompatActivity() {
     private lateinit var userId: String
     private lateinit var userMail: String
 
+    private var isDarkModeChange = false
+
     companion object {
         private const val REQUEST_IMAGE_PICK = 1001
     }
@@ -101,7 +103,9 @@ class MyPageActivity : AppCompatActivity() {
         userMail = usermail + ""
 
         loadUserProfile()
-        loadStatistics()
+        if (!isDarkModeChange) {
+            loadStatistics()
+        }
         setupDarkModeSwitch()
         setupEditProfileButton(userMail)
         setupProfileImage()
@@ -131,7 +135,9 @@ class MyPageActivity : AppCompatActivity() {
         val userBooks = myPageDao.loadUserBooks(userId)
 
         if (statistics.isEmpty() && userBooks.isEmpty()) {
-            Toast.makeText(this, "No statistics available", Toast.LENGTH_SHORT).show()
+            if (!isDarkModeChange) { // 다크모드 변경 시에는 Toast를 띄우지 않음
+                Toast.makeText(this, "No statistics available", Toast.LENGTH_SHORT).show()
+            }
             return
         }
 
@@ -171,8 +177,10 @@ class MyPageActivity : AppCompatActivity() {
         updateDarkMode(isDarkMode)
 
         switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
+            isDarkModeChange = true
             updateDarkMode(isChecked)
             sharedPreferences.edit().putBoolean("dark_mode", isChecked).apply()
+            isDarkModeChange = false
         }
     }
 
@@ -223,4 +231,6 @@ class MyPageActivity : AppCompatActivity() {
         }
     }
 }
+
+
 
