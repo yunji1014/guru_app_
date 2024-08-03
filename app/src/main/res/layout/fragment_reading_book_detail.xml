@@ -7,76 +7,85 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:paddingTop="0dp">
 
-        <ImageView
-            android:id="@+id/book_cover"
-            android:layout_width="165dp"
-            android:layout_height="211dp"
-            android:layout_gravity="center"
-            android:layout_marginEnd="16dp"
-            android:background="#DAF0F2"
-            android:contentDescription="Book cover image"
-            android:src="@android:drawable/ic_menu_gallery" />
-
         <LinearLayout
-            android:layout_width="174dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="0dp">
 
-            <TextView
-                android:id="@+id/start_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Start At: "
-                android:textSize="16sp" />
+            <ImageView
+                android:id="@+id/book_cover"
+                android:layout_width="165dp"
+                android:layout_height="211dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:background="#DAF0F2"
+                android:contentDescription="Book cover image"
+                android:src="@android:drawable/ic_menu_gallery" />
 
-            <TextView
-                android:id="@+id/book_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="도서명: "
-                android:textSize="16sp" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/book_author"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="지은이: "
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/start_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Start At: "
+                    android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/book_publisher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="출판사: "
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/book_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="도서명: "
+                    android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/book_isbn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="ISBN: "
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/book_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="지은이: "
+                    android:textSize="16sp" />
 
-            <Button
-                android:id="@+id/complete_button"
-                android:layout_width="77dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="8dp"
+                <TextView
+                    android:id="@+id/book_publisher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="출판사: "
+                    android:textSize="16sp" />
 
-                android:backgroundTint="#09C0D7"
-                android:text="완독"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/book_isbn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="ISBN: "
+                    android:textSize="16sp" />
 
+            </LinearLayout>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/complete_button"
+            android:layout_width="163dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#09C0D7"
+            android:text="완독"
+
+            android:textColor="#FFFFFF"
+
+            android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>
