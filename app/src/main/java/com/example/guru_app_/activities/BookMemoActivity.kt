@@ -41,10 +41,10 @@ class BookMemoActivity : AppCompatActivity(), MemoListFragment.MemoItemClickList
             return
         }
 
-        val isCompleted = intent.getBooleanExtra("IS_COMPLETED", false)
+        val book = bookDao.getBookById(bookId)
 
         if (savedInstanceState == null) {
-            if (isCompleted) {
+            if (book?.status == "completed") {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.book_detail_fragment_container, CompletedBookDetailFragment.newInstance(bookId))
                     .commit()
@@ -69,11 +69,11 @@ class BookMemoActivity : AppCompatActivity(), MemoListFragment.MemoItemClickList
             intent.putExtra("BOOK_ID", bookId)
             memoDetailLauncher.launch(intent)
         }
+
         // 뒤로가기 버튼 클릭 리스너 추가
         findViewById<ImageButton>(R.id.back_button).setOnClickListener {
             onBackPressed()
         }
-
     }
 
     override fun onMemoItemClick(memoId: Int) {

@@ -54,6 +54,9 @@
         android:id="@+id/save_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#84E4F1"
         android:text="Save"
-        android:layout_marginTop="8dp"/>
+        android:textSize="16sp"
+        android:textStyle="bold" />
 </LinearLayout>

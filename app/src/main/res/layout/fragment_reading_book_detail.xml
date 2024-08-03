@@ -72,7 +72,10 @@
                 android:layout_gravity="end"
                 android:layout_marginTop="8dp"
 
-                android:text="완독" />
+                android:backgroundTint="#09C0D7"
+                android:text="완독"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </LinearLayout>
