@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="16dp"
                 android:paddingBottom="8dp"
-                android:text="월간/연간 통계"
+                android:text="월간 통계"
                 android:textColor="#196191"
                 android:textSize="18sp" />
 

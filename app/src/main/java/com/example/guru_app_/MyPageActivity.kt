@@ -172,7 +172,7 @@ class MyPageActivity : AppCompatActivity() {
         btnEditProfile.setOnClickListener {
             edtBirth.isEnabled = !edtBirth.isEnabled
             edtName.isEnabled = !edtName.isEnabled
-            edtID.isEnabled = !edtID.isEnabled
+
 
             val name = edtName.text.toString()
             val id = edtID.text.toString()

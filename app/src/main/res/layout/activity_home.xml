@@ -33,7 +33,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_weight="1"
-                app:queryHint="검색어를 입력하시오">
+                app:queryHint="검색어를 입력하시오"
+                style="@style/CustomTextViewStyle">
 
             </SearchView>
 
@@ -46,7 +47,8 @@
                 android:textAlignment="viewStart"
                 android:textColorLink="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold|italic" />
+                android:textStyle="bold|italic"
+                style="@style/CustomTextViewStyle"/>
 
             <GridLayout
                 android:id="@+id/homegrid"
@@ -81,7 +83,9 @@
                 android:gravity="center"
                 android:text="인기 도서     "
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                style="@style/CustomTextViewStyle"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/PopBook"
