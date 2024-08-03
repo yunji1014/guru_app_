@@ -9,8 +9,16 @@ import com.example.guru_app_.DBHelper
 import com.example.guru_app_.models.Book
 
 class MyPageDao(context: Context) {
-    private val dbHelper: SQLiteOpenHelper = BookDatabaseHelper(context)
-    private val dbHelper2: SQLiteOpenHelper = DBHelper(context)
+    private val dbHelper: BookDatabaseHelper = BookDatabaseHelper(context)
+    private val dbHelper2: DBHelper = DBHelper(context)
+
+    fun saveUserProfileImage(userId: String, image: ByteArray) {
+        dbHelper.saveUserProfileImage(userId, image)
+    }
+
+    fun getUserProfileImage(userId: String): ByteArray? {
+        return dbHelper.getUserProfileImage(userId)
+    }
 
     // Load monthly statistics
     fun loadMonthlyStatistics(userId: String): List<Statistic> {
@@ -63,6 +71,7 @@ class MyPageDao(context: Context) {
         stmt.bindString(2, name)
         stmt.bindString(3, birth)
         stmt.bindString(4, mail)
+        stmt.executeUpdateDelete()
         db.close()
     }
 
@@ -74,9 +83,8 @@ class MyPageDao(context: Context) {
             val userId = cursor.getString(cursor.getColumnIndexOrThrow("id"))
             val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
             val birth = cursor.getString(cursor.getColumnIndexOrThrow("birth"))
-            //val profileUrl = cursor.getString(cursor.getColumnIndexOrThrow("photo"))
             cursor.close()
-            UserProfile(userId, name, birth)//, profileUrl)
+            UserProfile(userId, name, birth)
         } else {
             cursor.close()
             null
@@ -112,7 +120,9 @@ class MyPageDao(context: Context) {
         return book
     }
 
-    data class UserProfile(val userId: String, val name: String, val birth: String)//, val profileUrl: String?)
+    data class UserProfile(val userId: String, val name: String, val birth: String)
     data class Statistic(val month: String, val booksRead: Int)
     data class UserBook(val id: Int, val userId: String, val isbn: String, val status: String)
+    data class ProfilePhoto(var no: Long?, var image: ByteArray?)
 }
+

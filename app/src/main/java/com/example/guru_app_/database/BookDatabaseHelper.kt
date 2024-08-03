@@ -10,7 +10,11 @@ class BookDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
 
     companion object {
         private const val DATABASE_NAME = "booklog.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
+
+        private const val TABLE_USER_PHOTO = "user_photo"
+        private const val COLUMN_USER_ID = "user_id"
+        private const val COLUMN_IMAGE = "image"
 
         private const val CREATE_BOOKS_TABLE = """
             CREATE TABLE books (
@@ -72,6 +76,16 @@ class BookDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
             )
         """
 
+        private const val CREATE_TABLE_USER_PHOTO = """
+            CREATE TABLE $TABLE_USER_PHOTO (
+                $COLUMN_USER_ID TEXT PRIMARY KEY,
+                $COLUMN_IMAGE BLOB
+            )
+        """
+
+
+
+
 
 
     }
@@ -85,6 +99,9 @@ class BookDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         db.execSQL(CREATE_STATISTICS_TABLE)
         db.execSQL(CREATE_USERS_TABLE)
         db.execSQL(CREATE_USER_BOOKS_TABLE)
+        db.execSQL(CREATE_TABLE_USER_PHOTO)
+
+
     }
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS memos")
@@ -92,7 +109,30 @@ class BookDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         db.execSQL("DROP TABLE IF EXISTS Statistics")
         db.execSQL("DROP TABLE IF EXISTS users")
         db.execSQL("DROP TABLE IF EXISTS user_books")
+        db.execSQL("DROP TABLE IF EXISTS user_photo")
         onCreate(db)
+
+        android.util.Log.d("BookDatabaseHelper", "데이터베이스 선언 from $oldVersion to $newVersion")
+    }
+
+    fun saveUserProfileImage(userId: String, image: ByteArray) {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_USER_ID, userId)
+            put(COLUMN_IMAGE, image)
+        }
+        db.insertWithOnConflict(TABLE_USER_PHOTO, null, values, SQLiteDatabase.CONFLICT_REPLACE)
+    }
+
+    fun getUserProfileImage(userId: String): ByteArray? {
+        val db = readableDatabase
+        val cursor = db.query(TABLE_USER_PHOTO, arrayOf(COLUMN_IMAGE), "$COLUMN_USER_ID = ?", arrayOf(userId), null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                return it.getBlob(it.getColumnIndexOrThrow(COLUMN_IMAGE))
+            }
+        }
+        return null
     }
 
 

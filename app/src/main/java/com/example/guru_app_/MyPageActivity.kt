@@ -2,10 +2,14 @@ package com.example.guru_app_
 
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -26,6 +30,7 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.io.ByteArrayOutputStream
 
 class MyPageActivity : AppCompatActivity() {
 
@@ -43,6 +48,10 @@ class MyPageActivity : AppCompatActivity() {
     private lateinit var bookDao: BookDao
     private lateinit var userId: String
     private lateinit var userMail: String
+
+    companion object {
+        private const val REQUEST_IMAGE_PICK = 1001
+    }
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,6 +104,7 @@ class MyPageActivity : AppCompatActivity() {
         loadStatistics()
         setupDarkModeSwitch()
         setupEditProfileButton(userMail)
+        setupProfileImage()
     }
 
     private fun loadUserProfile() {
@@ -106,7 +116,13 @@ class MyPageActivity : AppCompatActivity() {
             edtBirth.isEnabled = false
             edtID.isEnabled = false
             edtName.isEnabled = false
-            //Glide.with(this).load(it.profileUrl).into(imgProfile)
+            imgProfile.isEnabled = false
+        }
+
+        val profileImage = myPageDao.getUserProfileImage(userMail)
+        profileImage?.let {
+            val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+            imgProfile.setImageBitmap(bitmap)
         }
     }
 
@@ -172,26 +188,39 @@ class MyPageActivity : AppCompatActivity() {
         btnEditProfile.setOnClickListener {
             edtBirth.isEnabled = !edtBirth.isEnabled
             edtName.isEnabled = !edtName.isEnabled
-
+            imgProfile.isEnabled = !imgProfile.isEnabled
 
             val name = edtName.text.toString()
             val id = edtID.text.toString()
             val birth = edtBirth.text.toString()
 
             myPageDao.saveUserProfile(id, name, birth, usermail)
-
-//            val profileImageUri: Uri? = null // Get the URI of the new profile image if available
-//            if (profileImageUri != null) {
-                // Save the profile image locally or to a server if needed and update the user profile with the new image URL/path
-                // Example:
-                // val profileImagePath = saveProfileImage(profileImageUri)
-                // myPageDao.updateUserProfileImage(userId, profileImagePath)
-           // }
         }
     }
 
-    // Add a function to save the profile image if necessary
-    // private fun saveProfileImage(uri: Uri): String {
-    //     // Implement logic to save the image locally or to a server and return the path/URL
-    // }
+    private fun setupProfileImage() {
+        imgProfile.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(intent, REQUEST_IMAGE_PICK)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK) {
+            val selectedImageUri = data?.data
+            selectedImageUri?.let {
+                val inputStream = contentResolver.openInputStream(it)
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                imgProfile.setImageBitmap(bitmap)
+
+                val byteArrayOutputStream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+                val imageByteArray = byteArrayOutputStream.toByteArray()
+
+                myPageDao.saveUserProfileImage(userMail, imageByteArray)
+            }
+        }
+    }
 }
+
