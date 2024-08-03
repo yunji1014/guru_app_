@@ -34,7 +34,7 @@ class MyPageActivity : AppCompatActivity() {
     private lateinit var switchDarkMode: Switch
     private lateinit var edtName: EditText
     private lateinit var edtID: EditText
-    private lateinit var edtTel: EditText
+    private lateinit var edtBirth: EditText
     private lateinit var btnEditProfile: Button
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var imgProfile: ImageView
@@ -79,7 +79,7 @@ class MyPageActivity : AppCompatActivity() {
         switchDarkMode = findViewById(R.id.switchDarkMode)
         edtName = findViewById(R.id.edtName)
         edtID = findViewById(R.id.edtID)
-        edtTel = findViewById(R.id.edtTel)
+        edtBirth = findViewById(R.id.edtBirth)
         btnEditProfile = findViewById(R.id.btnEditProfile)
         imgProfile = findViewById(R.id.imgProfile)
         sharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
@@ -94,7 +94,7 @@ class MyPageActivity : AppCompatActivity() {
         loadUserProfile()
         loadStatistics()
         setupDarkModeSwitch()
-        setupEditProfileButton()
+        setupEditProfileButton(userMail)
     }
 
     private fun loadUserProfile() {
@@ -102,8 +102,8 @@ class MyPageActivity : AppCompatActivity() {
         userProfile?.let {
             edtName.setText(it.name)
             edtID.setText(it.userId)
-            edtTel.setText(it.birth)
-            edtTel.isEnabled = false
+            edtBirth.setText(it.birth)
+            edtBirth.isEnabled = false
             edtID.isEnabled = false
             edtName.isEnabled = false
             //Glide.with(this).load(it.profileUrl).into(imgProfile)
@@ -168,23 +168,25 @@ class MyPageActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupEditProfileButton() {
+    private fun setupEditProfileButton(usermail: String) {
         btnEditProfile.setOnClickListener {
-            edtTel.isEnabled = !edtTel.isEnabled
+            edtBirth.isEnabled = !edtBirth.isEnabled
             edtName.isEnabled = !edtName.isEnabled
+            edtID.isEnabled = !edtID.isEnabled
+
             val name = edtName.text.toString()
             val id = edtID.text.toString()
-            val tel = edtTel.text.toString()
+            val birth = edtBirth.text.toString()
 
-            myPageDao.saveUserProfile(userId, name, tel)
+            myPageDao.saveUserProfile(id, name, birth, usermail)
 
-            val profileImageUri: Uri? = null // Get the URI of the new profile image if available
-            if (profileImageUri != null) {
+//            val profileImageUri: Uri? = null // Get the URI of the new profile image if available
+//            if (profileImageUri != null) {
                 // Save the profile image locally or to a server if needed and update the user profile with the new image URL/path
                 // Example:
                 // val profileImagePath = saveProfileImage(profileImageUri)
                 // myPageDao.updateUserProfileImage(userId, profileImagePath)
-            }
+           // }
         }
     }
 

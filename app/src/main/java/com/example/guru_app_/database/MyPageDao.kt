@@ -56,14 +56,13 @@ class MyPageDao(context: Context) {
     }
 
     // Save user profile
-    fun saveUserProfile(userId: String, name: String, phoneNumber: String) {
-        val db = dbHelper.writableDatabase
-        val values = ContentValues().apply {
-            put("user_id", userId)
-            put("name", name)
-            put("phone_number", phoneNumber)
-        }
-        db.insertWithOnConflict("users", null, values, SQLiteDatabase.CONFLICT_REPLACE)
+    fun saveUserProfile(userId: String, name: String, birth: String, mail: String) {
+        val db = dbHelper2.writableDatabase
+        val stmt = db.compileStatement("UPDATE users SET id=?, name=?, birth=? WHERE mail=?")
+        stmt.bindString(1, userId)
+        stmt.bindString(2, name)
+        stmt.bindString(3, birth)
+        stmt.bindString(4, mail)
         db.close()
     }
 

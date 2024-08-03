@@ -76,10 +76,10 @@
                         android:enabled="false" />
 
                     <EditText
-                        android:id="@+id/edtTel"
+                        android:id="@+id/edtBirth"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="전화번호"
+                        android:hint="생년월일"
                         android:textSize="16sp"
                         android:textColor="#000"
                         android:enabled="false" />
