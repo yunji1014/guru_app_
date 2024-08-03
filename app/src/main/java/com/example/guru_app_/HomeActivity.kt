@@ -35,7 +35,7 @@ class HomeActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-        val books = bookDao.getAllBooks().filter { it.status == "reading" }
+        val books = bookDao.getAllBooks().filter { it.status == "reading" }.toMutableList()
         bookImageAdapter = BookImageAdapter(this, books, bookDao)
         recyclerView.adapter = bookImageAdapter
 
