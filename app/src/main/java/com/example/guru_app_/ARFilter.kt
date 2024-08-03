@@ -13,14 +13,6 @@ class ARFilter : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ar_filter)
 
-        val toInstagramButton: Button = findViewById(R.id.to_instagram)
-        toInstagramButton.setOnClickListener {
-            val url = "https://www.instagram.com/ar/1996595037449441/"
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse(url)
-            startActivity(intent)
-        }
-
         val navView: BottomNavigationView = findViewById(R.id.bottom_navigation)
         navView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -33,7 +25,6 @@ class ARFilter : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_arfilter -> {
-                    startActivity(Intent(this, ARFilter::class.java))
                     true
                 }
                 R.id.navigation_mypage -> {
@@ -43,5 +34,15 @@ class ARFilter : AppCompatActivity() {
                 else -> false
             }
         }
+
+        val toInstagramButton: Button = findViewById(R.id.to_instagram)
+        toInstagramButton.setOnClickListener {
+            val url = "https://www.instagram.com/ar/1996595037449441/"
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(url)
+            startActivity(intent)
+        }
+
+
     }
 }

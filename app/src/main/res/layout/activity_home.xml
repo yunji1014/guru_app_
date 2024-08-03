@@ -16,7 +16,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
 
@@ -86,7 +86,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/PopBook"
                 android:layout_width="match_parent"
-                android:layout_height="267dp"
+                android:layout_height="231dp"
                 android:layout_row="0"
                 android:layout_column="0"
                 android:orientation="vertical"
@@ -101,7 +101,7 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:layout_constraintBottom_toBottomOf="parent"

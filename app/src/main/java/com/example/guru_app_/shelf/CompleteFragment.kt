@@ -32,7 +32,7 @@ class CompleteFragment : Fragment() {
         val gridLayoutManager = GridLayoutManager(context, 3) // 열의 수
         recyclerView.layoutManager = gridLayoutManager
 
-        val books = bookDao.getAllBooks().filter { it.status == "completed" }
+        val books = bookDao.getAllBooks().filter { it.status == "completed" }.toMutableList()
 
         bookImageAdapter = BookImageAdapter(requireContext(), books, bookDao)
         recyclerView.adapter = bookImageAdapter
@@ -48,10 +48,5 @@ class CompleteFragment : Fragment() {
         val bookDao = BookDao(requireContext())
         val books = bookDao.getAllBooks() // 예시로 모든 책을 불러오는 메서드
         bookImageAdapter.updateBooks(books)
-    }
-
-    // 데이터 갱신 메서드
-    fun refreshBooks() {
-        loadBooks()
     }
 }

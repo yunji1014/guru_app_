@@ -32,7 +32,7 @@ class ReadingFragment : Fragment() {
         val gridLayoutManager = GridLayoutManager(context, 3) // 열의 수
         recyclerView.layoutManager = gridLayoutManager
 
-        val books = bookDao.getAllBooks().filter { it.status == "reading" }
+        val books = bookDao.getAllBooks().filter { it.status == "reading" }.toMutableList()
 
         bookImageAdapter = BookImageAdapter(requireContext(), books, bookDao)
         recyclerView.adapter = bookImageAdapter

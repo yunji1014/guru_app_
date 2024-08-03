@@ -1,5 +1,6 @@
 package com.example.guru_app_.shelf
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -15,7 +16,8 @@ import com.example.guru_app_.activities.BookMemoActivity
 import com.example.guru_app_.database.BookDao
 import com.example.guru_app_.models.Book
 
-class BookImageAdapter(private val context: Context, private var books: List<Book>, private val bookDao: BookDao) : RecyclerView.Adapter<BookImageAdapter.BookImageViewHolder>() {
+
+class BookImageAdapter(private val context: Context, private var books: MutableList<Book>, private val bookDao: BookDao) : RecyclerView.Adapter<BookImageAdapter.BookImageViewHolder>() {
 
     class BookImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val bookImageButton: ImageButton = view.findViewById(R.id.bookImageButton)
@@ -28,7 +30,6 @@ class BookImageAdapter(private val context: Context, private var books: List<Boo
 
     override fun onBindViewHolder(holder: BookImageViewHolder, position: Int) {
         val book = books[position]
-        val bookDao = BookDao(context) // context 전달 필요
 
         if (book.coverImage != null) {
             Glide.with(holder.bookImageButton.context).load(book.coverImage).into(holder.bookImageButton)
@@ -40,10 +41,6 @@ class BookImageAdapter(private val context: Context, private var books: List<Boo
             setOnClickListener {
                 val context = it.context
                 val bookId = book.id
-                val startDate = book.startDate // book 객체에 startDate가 포함되어 있다고 가정합니다.
-
-                // Toast 메시지로 책의 ID와 start_date를 표시합니다.
-                Toast.makeText(context, "ID: $bookId, Start Date: $startDate", Toast.LENGTH_SHORT).show()
 
                 // 기존의 Intent 코드
                 val intent = Intent(context, BookMemoActivity::class.java).apply {
@@ -54,15 +51,14 @@ class BookImageAdapter(private val context: Context, private var books: List<Boo
 
             setOnLongClickListener {
                 // 경고창 생성
-
                 AlertDialog.Builder(it.context).apply {
                     setTitle("경고")
                     setMessage("삭제하시겠습니까?")
                     setPositiveButton("예") { dialog, which ->
-                        // 삭제 로직을 여기에 추가
-                        val bookDao = BookDao(it.context)
+                        // 삭제 로직
                         bookDao.deleteBook(book.id)
-
+                        books.removeAt(position)
+                        notifyItemRemoved(position)
                         Toast.makeText(it.context, "삭제되었습니다.", Toast.LENGTH_SHORT).show()
                     }
                     setNegativeButton("아니오") { dialog, which ->
@@ -79,10 +75,10 @@ class BookImageAdapter(private val context: Context, private var books: List<Boo
         return books.size
     }
 
-
     // 데이터 갱신 메서드 추가
     fun updateBooks(newBooks: List<Book>) {
-        books = newBooks
+        books.clear()
+        books.addAll(newBooks)
         notifyDataSetChanged()
     }
 }

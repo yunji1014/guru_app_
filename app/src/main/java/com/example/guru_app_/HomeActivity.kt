@@ -2,8 +2,8 @@ package com.example.guru_app_
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +35,7 @@ class HomeActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-        val books = bookDao.getAllBooks()
+        val books = bookDao.getAllBooks().filter { it.status == "reading" }.toMutableList()
         bookImageAdapter = BookImageAdapter(this, books, bookDao)
         recyclerView.adapter = bookImageAdapter
 
@@ -67,11 +67,6 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
-        // 기본 화면 설정
-        if (savedInstanceState == null) {
-            navView.selectedItemId = R.id.navigation_home
-        }
-
         val search = findViewById<SearchView>(R.id.search)
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -89,6 +84,16 @@ class HomeActivity : AppCompatActivity() {
         })
     }
 
+    override fun onStop() {
+        super.onStop()
+        Log.d("HomeActivity", "onStop called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("HomeActivity", "onDestroy called")
+    }
+
     private fun fetchBestsellers() {
         val apiKey = "ttb1014jiye1521001"
         val queryType = "Bestseller"
@@ -100,7 +105,6 @@ class HomeActivity : AppCompatActivity() {
             .enqueue(object : Callback<BestsellerResponse> {
                 override fun onResponse(call: Call<BestsellerResponse>, response: Response<BestsellerResponse>) {
                     if (response.isSuccessful) {
-
                         val books = response.body()?.items ?: mutableListOf()
                         bestsellerAdapter = PopBookAdapter(books)
                         popBook.adapter = bestsellerAdapter

@@ -41,7 +41,7 @@ android {
 
 dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation (libs.converter.simplexml)
+    implementation ("com.squareup.retrofit2:converter-simplexml:2.9.0")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.storage.ktx)
@@ -53,6 +53,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.12.0")
     implementation("com.github.bumptech.glide:compiler:4.12.0")
     implementation("androidx.fragment:fragment-ktx:1.5.2")
+    implementation ("com.google.android.material:material:1.4.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

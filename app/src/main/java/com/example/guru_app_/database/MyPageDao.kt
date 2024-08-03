@@ -5,9 +5,41 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.guru_app_.BookDatabaseHelper
+import com.example.guru_app_.models.Book
 
 class MyPageDao(context: Context) {
     private val dbHelper: SQLiteOpenHelper = BookDatabaseHelper(context)
+
+    // Load monthly statistics (dummy implementation)
+    fun loadMonthlyStatistics(userId: String): List<Statistic> {
+        // Implement actual logic here to retrieve statistics from the database
+        return listOf(
+            Statistic("January", 5),
+            Statistic("February", 8)
+            // Add more dummy data or fetch from the database
+        )
+    }
+
+    // Load user books
+    fun loadUserBooks(userId: String): List<UserBook> {
+        val db = dbHelper.readableDatabase
+        val cursor = db.query("user_books", null, "userId=?", arrayOf(userId), null, null, null)
+        val userBooks = mutableListOf<UserBook>()
+        with(cursor) {
+            while (moveToNext()) {
+                val userBook = UserBook(
+                    getInt(getColumnIndexOrThrow("id")),
+                    getString(getColumnIndexOrThrow("userId")),
+                    getString(getColumnIndexOrThrow("isbn")),
+                    getString(getColumnIndexOrThrow("status"))
+                )
+                userBooks.add(userBook)
+            }
+        }
+        cursor.close()
+        db.close()
+        return userBooks
+    }
 
     // 사용자 프로필 저장
     fun saveUserProfile(userId: String, name: String, phoneNumber: String) {
@@ -35,85 +67,37 @@ class MyPageDao(context: Context) {
         }
     }
 
-    // 월간 통계 저장
-    fun saveMonthlyStatistics(userId: String, month: String, booksRead: Int, genreStats: String) {
-        val db = dbHelper.writableDatabase
-        val values = ContentValues().apply {
-            put("user_id", userId)
-            put("month", month)
-            put("books_read", booksRead)
-            put("genre_stats", genreStats)
-        }
-        db.insertWithOnConflict("statistics", null, values, SQLiteDatabase.CONFLICT_REPLACE)
-    }
 
-    // 월간 통계 로드
-    fun loadMonthlyStatistics(userId: String): List<MonthlyStatistics> {
+    // Load book by ISBN
+    fun loadBook(isbn: String): Book? {
         val db = dbHelper.readableDatabase
-        val cursor = db.query("statistics", null, "user_id=?", arrayOf(userId), null, null, null)
-        val statsList = mutableListOf<MonthlyStatistics>()
-        while (cursor.moveToNext()) {
-            val month = cursor.getString(cursor.getColumnIndexOrThrow("month"))
-            val booksRead = cursor.getInt(cursor.getColumnIndexOrThrow("books_read"))
-            val genreStats = cursor.getString(cursor.getColumnIndexOrThrow("genre_stats"))
-            statsList.add(MonthlyStatistics(userId, month, booksRead, genreStats))
+        var book: Book? = null
+        val cursor = db.query("books", null, "isbn=?", arrayOf(isbn), null, null, null)
+        try {
+            if (cursor.moveToFirst()) {
+                book = Book(
+                    cursor.getInt(cursor.getColumnIndexOrThrow("id")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("title")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("author")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("publisher")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("isbn")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("cover_image")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("start_date")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("end_date")),
+                    cursor.getFloat(cursor.getColumnIndexOrThrow("rating")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("status"))
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            cursor.close()
+            db.close()
         }
-        cursor.close()
-        return statsList
+        return book
     }
 
-    // 도서 정보 저장
-    fun saveBook(isbn: String, title: String, coverImage: String, category: String) {
-        val db = dbHelper.writableDatabase
-        val values = ContentValues().apply {
-            put("isbn", isbn)
-            put("title", title)
-            put("cover_image", coverImage)
-            put("category", category)
-        }
-        db.insertWithOnConflict("books", null, values, SQLiteDatabase.CONFLICT_REPLACE)
-    }
-
-    // 사용자 도서 상태 저장
-    fun saveUserBookStatus(userId: String, isbn: String, status: String, rating: Int) {
-        val db = dbHelper.writableDatabase
-        val values = ContentValues().apply {
-            put("user_id", userId)
-            put("isbn", isbn)
-            put("status", status)
-            put("rating", rating)
-        }
-        db.insertWithOnConflict("user_books", null, values, SQLiteDatabase.CONFLICT_REPLACE)
-    }
-
-    // 사용자 도서 상태 로드
-    fun loadUserBooks(userId: String): List<UserBook> {
-        val db = dbHelper.readableDatabase
-        val cursor = db.query("user_books", null, "user_id=?", arrayOf(userId), null, null, null)
-        val userBooksList = mutableListOf<UserBook>()
-        while (cursor.moveToNext()) {
-            val isbn = cursor.getString(cursor.getColumnIndexOrThrow("isbn"))
-            val status = cursor.getString(cursor.getColumnIndexOrThrow("status"))
-            val rating = cursor.getInt(cursor.getColumnIndexOrThrow("rating"))
-            userBooksList.add(UserBook(userId, isbn, status, rating))
-        }
-        cursor.close()
-        return userBooksList
-    }
-
-
-    // 월간 통계 업데이트
-    fun updateMonthlyStatistics(userId: String, month: String, booksRead: Int, genreStats: String) {
-        val db = dbHelper.writableDatabase
-        val values = ContentValues().apply {
-            put("books_read", booksRead)
-            put("genre_stats", genreStats)
-        }
-        db.update("statistics", values, "user_id=? AND month=?", arrayOf(userId, month))
-    }
+    data class UserProfile(val userId: String, val name: String, val phoneNumber: String)
+    data class Statistic(val month: String, val booksRead: Int)
+    data class UserBook(val id: Int, val userId: String, val isbn: String, val status: String)
 }
-
-// 데이터 클래스 정의
-data class UserProfile(val userId: String, val name: String, val phoneNumber: String)
-data class MonthlyStatistics(val userId: String, val month: String, val booksRead: Int, val genreStats: String)
-data class UserBook(val userId: String, val isbn: String, val status: String, val rating: Int)

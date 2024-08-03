@@ -21,6 +21,28 @@ class BookShelfActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_book_shelf)
 
+        val navView: BottomNavigationView = findViewById(R.id.bottom_navigation)
+        navView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    true
+                }
+                R.id.navigation_bookshelf -> {
+                    true
+                }
+                R.id.navigation_arfilter -> {
+                    startActivity(Intent(this, ARFilter::class.java))
+                    true
+                }
+                R.id.navigation_mypage -> {
+                    startActivity(Intent(this, MyPageActivity::class.java))
+                    true
+                }
+                else -> false
+            }
+        }
+
         val tabLayout: TabLayout = findViewById(R.id.tab_layout)
         readingFragment = ReadingFragment()
         completeFragment = CompleteFragment()
@@ -40,28 +62,7 @@ class BookShelfActivity : AppCompatActivity() {
         // 기본적으로 첫 번째 탭을 선택합니다.
         supportFragmentManager.beginTransaction().replace(R.id.main_view, readingFragment, "READING_FRAGMENT").commit()
 
-        val navView: BottomNavigationView = findViewById(R.id.bottom_navigation)
-        navView.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.navigation_home -> {
-                    startActivity(Intent(this, HomeActivity::class.java))
-                    true
-                }
-                R.id.navigation_bookshelf -> {
-                    startActivity(Intent(this, BookShelfActivity::class.java))
-                    true
-                }
-                R.id.navigation_arfilter -> {
-                    startActivity(Intent(this, ARFilter::class.java))
-                    true
-                }
-                R.id.navigation_mypage -> {
-                    startActivity(Intent(this, MyPageActivity::class.java))
-                    true
-                }
-                else -> false
-            }
-        }
+
     }
 }
 
