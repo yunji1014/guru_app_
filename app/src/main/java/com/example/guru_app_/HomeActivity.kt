@@ -34,7 +34,7 @@ class HomeActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-        val books = bookDao.getAllBooks()
+        val books = bookDao.getAllBooks().filter { it.status == "reading" }
         bookImageAdapter = BookImageAdapter(this, books, bookDao)
         recyclerView.adapter = bookImageAdapter
 
@@ -47,7 +47,7 @@ class HomeActivity : AppCompatActivity() {
         navView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    // do nothing to prevent reloading HomeActivity
+                    startActivity(Intent(this, HomeActivity::class.java))
                     true
                 }
                 R.id.navigation_bookshelf -> {

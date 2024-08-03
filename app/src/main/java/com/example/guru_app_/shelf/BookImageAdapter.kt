@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.guru_app_.R
@@ -42,9 +43,6 @@ class BookImageAdapter(private val context: Context, private var books: List<Boo
                 val bookId = book.id
                 val startDate = book.startDate // book 객체에 startDate가 포함되어 있다고 가정합니다.
 
-                // Toast 메시지로 책의 ID와 start_date를 표시합니다.
-                Toast.makeText(context, "ID: $bookId, Start Date: $startDate", Toast.LENGTH_SHORT).show()
-
                 // 기존의 Intent 코드
                 val intent = Intent(context, BookMemoActivity::class.java).apply {
                     putExtra("BOOK_ID", bookId)
@@ -62,7 +60,6 @@ class BookImageAdapter(private val context: Context, private var books: List<Boo
                         // 삭제 로직을 여기에 추가
                         val bookDao = BookDao(it.context)
                         bookDao.deleteBook(book.id)
-
                         Toast.makeText(it.context, "삭제되었습니다.", Toast.LENGTH_SHORT).show()
                     }
                     setNegativeButton("아니오") { dialog, which ->
@@ -82,7 +79,7 @@ class BookImageAdapter(private val context: Context, private var books: List<Boo
 
     // 데이터 갱신 메서드 추가
     fun updateBooks(newBooks: List<Book>) {
-        books = newBooks
+        books = ArrayList(newBooks) // 새로운 리스트로 교체
         notifyDataSetChanged()
     }
 }
