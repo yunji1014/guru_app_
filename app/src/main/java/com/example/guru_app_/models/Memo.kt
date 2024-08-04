@@ -6,7 +6,7 @@ data class Memo(
     val title: String,
     val content: String,
     val page: Int?,
-    val imagePath: String?,
+    val imagePath: String? = null,
     val createdAt: String,
     val updatedAt: String?
 )

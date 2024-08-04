@@ -9,7 +9,7 @@ import com.example.guru_app_.models.Memo
 
 class MemoDao(context: Context) {
     private val dbHelper: SQLiteOpenHelper = BookDatabaseHelper(context)
-
+    //메모 추가 함수
     fun addMemo(memo: Memo) {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -24,7 +24,7 @@ class MemoDao(context: Context) {
         db.insert("memos", null, values)
         db.close()
     }
-
+    //메모 업데이트 함수
     fun updateMemo(memo: Memo) {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -39,13 +39,14 @@ class MemoDao(context: Context) {
         db.update("memos", values, "id=?", arrayOf(memo.id.toString()))
         db.close()
     }
-
+    //특정 책에 대한 모든 메모 가져오기 함수
     fun getMemosForBook(bookId: Int): List<Memo> {
         val db = dbHelper.readableDatabase
         val cursor = db.query(
             "memos", null, "book_id=?", arrayOf(bookId.toString()),
             null, null, null
         )
+
         val memos = mutableListOf<Memo>()
         with(cursor) {
             while (moveToNext()) {

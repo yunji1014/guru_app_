@@ -86,7 +86,7 @@ class MemoListFragment : Fragment() {
             .setNegativeButton("취소", null)
             .show()
     }
-
+    //메모 목록 갱신
     fun refreshMemoList() {
         val memos = memoDao.getMemosForBook(bookId)
         memoListAdapter = MemoListAdapter(memos)

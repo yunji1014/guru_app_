@@ -1,12 +1,13 @@
 package com.example.guru_app_
 
-
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -69,6 +70,7 @@ class MyPageActivity : AppCompatActivity() {
         val preferences = getSharedPreferences("user_pref", MODE_PRIVATE)
         val usermail = preferences.getString("usermail", "")
 
+        // 하단 네비게이션바 아이템 선택 리스너 설정
         navView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
@@ -91,7 +93,7 @@ class MyPageActivity : AppCompatActivity() {
         }
 
         barChart = findViewById(R.id.barChart)
-       // pieChart = findViewById(R.id.pieChart)
+        // pieChart = findViewById(R.id.pieChart) // PieChart 초기화
         switchDarkMode = findViewById(R.id.switchDarkMode)
         edtName = findViewById(R.id.edtName)
         edtID = findViewById(R.id.edtID)
@@ -100,15 +102,15 @@ class MyPageActivity : AppCompatActivity() {
         imgProfile = findViewById(R.id.imgProfile)
         sharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
 
-        edtID.isEnabled = false  // Disable the ID field
+        edtID.isEnabled = false  // ID 필드 비활성화
 
         myPageDao = MyPageDao(this)
         bookDao = BookDao(this)
         userId = "some_user_id" // 실제 사용자 ID로 변경 필요
         userMail = usermail + ""
 
-        setupBarChart()
-//        loadPieChart(bookDao)
+        setupBarChart() // BarChart 데이터 로드
+        // loadPieChart(bookDao) // PieChart 데이터 로드
 
         loadUserProfile()
         if (!isDarkModeChange) {
@@ -119,6 +121,7 @@ class MyPageActivity : AppCompatActivity() {
         setupProfileImage()
     }
 
+    // BarChart 설정
     private fun setupBarChart() {
         val completedBooksCountByMonth = bookDao.getCompletedBooksCountByMonth()
 
@@ -143,34 +146,31 @@ class MyPageActivity : AppCompatActivity() {
             }
         }
 
+        // 현재 모드에 따라 축과 텍스트 색상 설정
+        val isDarkMode = resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        val textColor = if (isDarkMode) Color.WHITE else Color.BLACK
+
+        xAxis.textColor = textColor
+        barChart.axisLeft.textColor = textColor
+        barChart.axisRight.textColor = textColor
+        barChart.legend.textColor = textColor
+
         barChart.axisLeft.axisMinimum = 0f
+        barChart.axisLeft.granularity = 1f // 세로 축 간격을 1로 설정
+        barChart.axisLeft.valueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return value.toInt().toString() // 정수로 포맷팅
+            }
+        }
+
         barChart.axisRight.isEnabled = false
         barChart.description.isEnabled = false
         barChart.invalidate() // 차트를 갱신합니다.
     }
 
-//    private fun loadPieChart(bookDao: BookDao) {
-//        val completedBooks = bookDao.getBooksByStatus("completed")
-//        val entries = mutableListOf<PieEntry>()
-//        val genreCounts = mutableMapOf<String, Int>()
-//
-//        for (book in completedBooks) {
-//            //val genre = book.genre
-//            //genreCounts[genre] = genreCounts.getOrDefault(genre, 0) + 1
-//        }
-//
-//        for ((genre, count) in genreCounts) {
-//            entries.add(PieEntry(count.toFloat(), genre))
-//        }
-//
-//        val dataSet = PieDataSet(entries, "Books by Genre")
-//        dataSet.colors = ColorTemplate.MATERIAL_COLORS.toList()
-//        val data = PieData(dataSet)
-//
-//        pieChart.data = data
-//        pieChart.invalidate() // Refresh chart
-//    }
 
+    // 사용자 프로필 로드
     private fun loadUserProfile() {
         val userProfile = myPageDao.loadUserProfile(userMail)
         userProfile?.let {
@@ -190,6 +190,7 @@ class MyPageActivity : AppCompatActivity() {
         }
     }
 
+    // 통계 데이터 로드
     private fun loadStatistics() {
         val statistics = myPageDao.loadMonthlyStatistics(userId)
         val userBooks = myPageDao.loadUserBooks(userId)
@@ -231,6 +232,7 @@ class MyPageActivity : AppCompatActivity() {
         pieChart.invalidate()
     }
 
+    // 다크모드 스위치 설정
     private fun setupDarkModeSwitch() {
         val isDarkMode = sharedPreferences.getBoolean("dark_mode", false)
         switchDarkMode.isChecked = isDarkMode
@@ -244,6 +246,7 @@ class MyPageActivity : AppCompatActivity() {
         }
     }
 
+    // 다크모드 업데이트
     private fun updateDarkMode(isDarkMode: Boolean) {
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -252,6 +255,7 @@ class MyPageActivity : AppCompatActivity() {
         }
     }
 
+    // 프로필 수정 버튼 설정
     private fun setupEditProfileButton(usermail: String) {
         btnEditProfile.setOnClickListener {
             edtBirth.isEnabled = !edtBirth.isEnabled
@@ -266,6 +270,7 @@ class MyPageActivity : AppCompatActivity() {
         }
     }
 
+    // 프로필 이미지 설정
     private fun setupProfileImage() {
         imgProfile.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -273,6 +278,7 @@ class MyPageActivity : AppCompatActivity() {
         }
     }
 
+    // 이미지 선택 결과 처리
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK) {

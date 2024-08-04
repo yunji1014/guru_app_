@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -39,7 +40,7 @@ class MemoDetailActivity : AppCompatActivity() {
     private lateinit var backButton: ImageButton
     private lateinit var imageView: ImageView
     private var imageUri: Uri? = null
-
+    // 갤러리에서 이미지를 선택한 결과를 처리하는 런처
     private val requestGalleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             imageUri = result.data?.data
@@ -47,7 +48,7 @@ class MemoDetailActivity : AppCompatActivity() {
             imageView.visibility = ImageView.VISIBLE
         }
     }
-
+    // 카메라로 찍은 이미지를 처리하는 런처
     private val requestCameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val imageBitmap = result.data?.extras?.get("data") as Bitmap
@@ -56,7 +57,7 @@ class MemoDetailActivity : AppCompatActivity() {
             imageView.visibility = ImageView.VISIBLE
         }
     }
-
+    // 권한을 체크하고 요청하는 함수
     private fun checkAndRequestPermissions() {
         val permissions = mutableListOf<String>()
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -75,7 +76,7 @@ class MemoDetailActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, permissions.toTypedArray(), REQUEST_PERMISSIONS)
         }
     }
-
+    // 액티비티가 생성될 때 호출되는 함수
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo_detail)
@@ -101,6 +102,7 @@ class MemoDetailActivity : AppCompatActivity() {
                 memoTitle.setText(it.title)
                 memoContent.setText(it.content)
                 imageUri = it.imagePath?.let { path -> Uri.parse(path) }
+                Log.d("MemoDetailActivity", "Loaded Memo: imageUri = $imageUri")
                 if (imageUri != null) {
                     if (isValidUri(imageUri!!)) {
                         imageView.setImageURI(imageUri)
@@ -162,6 +164,7 @@ class MemoDetailActivity : AppCompatActivity() {
         val content = memoContent.text.toString().ifBlank { "No content" }
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val date = dateFormat.format(Date())
+        Log.d("MemoDetailActivity", "Saving Memo: imageUri = $imageUri")
 
         if (memoId == -1) {
             // 새로운 메모 추가
@@ -204,7 +207,7 @@ class MemoDetailActivity : AppCompatActivity() {
         stream.close()
         return Uri.fromFile(file)
     }
-
+    // URI가 유효한지 확인하는 함수
     private fun isValidUri(uri: Uri): Boolean {
         return try {
             contentResolver.openInputStream(uri)?.close()
@@ -213,7 +216,7 @@ class MemoDetailActivity : AppCompatActivity() {
             false
         }
     }
-
+    // 권한 요청 결과를 처리하는 함수
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
