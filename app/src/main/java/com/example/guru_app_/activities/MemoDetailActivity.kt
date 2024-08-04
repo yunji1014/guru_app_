@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -101,6 +102,7 @@ class MemoDetailActivity : AppCompatActivity() {
                 memoTitle.setText(it.title)
                 memoContent.setText(it.content)
                 imageUri = it.imagePath?.let { path -> Uri.parse(path) }
+                Log.d("MemoDetailActivity", "Loaded Memo: imageUri = $imageUri")
                 if (imageUri != null) {
                     if (isValidUri(imageUri!!)) {
                         imageView.setImageURI(imageUri)
@@ -162,6 +164,7 @@ class MemoDetailActivity : AppCompatActivity() {
         val content = memoContent.text.toString().ifBlank { "No content" }
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val date = dateFormat.format(Date())
+        Log.d("MemoDetailActivity", "Saving Memo: imageUri = $imageUri")
 
         if (memoId == -1) {
             // 새로운 메모 추가

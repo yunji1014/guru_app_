@@ -46,6 +46,7 @@ class MemoDao(context: Context) {
             "memos", null, "book_id=?", arrayOf(bookId.toString()),
             null, null, null
         )
+
         val memos = mutableListOf<Memo>()
         with(cursor) {
             while (moveToNext()) {
