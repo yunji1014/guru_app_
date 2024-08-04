@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:src="@drawable/readnow_logo"
+        android:src="@drawable/readnow"
 
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
