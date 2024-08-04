@@ -23,14 +23,19 @@ import com.example.guru_app_.database.MyPageDao
 import com.example.guru_app_.shelf.BookShelfActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class MyPageActivity : AppCompatActivity() {
 
@@ -48,6 +53,8 @@ class MyPageActivity : AppCompatActivity() {
     private lateinit var bookDao: BookDao
     private lateinit var userId: String
     private lateinit var userMail: String
+
+    private var isDarkModeChange = false
 
     companion object {
         private const val REQUEST_IMAGE_PICK = 1001
@@ -84,7 +91,7 @@ class MyPageActivity : AppCompatActivity() {
         }
 
         barChart = findViewById(R.id.barChart)
-        pieChart = findViewById(R.id.pieChart)
+       // pieChart = findViewById(R.id.pieChart)
         switchDarkMode = findViewById(R.id.switchDarkMode)
         edtName = findViewById(R.id.edtName)
         edtID = findViewById(R.id.edtID)
@@ -100,12 +107,69 @@ class MyPageActivity : AppCompatActivity() {
         userId = "some_user_id" // 실제 사용자 ID로 변경 필요
         userMail = usermail + ""
 
+        setupBarChart()
+//        loadPieChart(bookDao)
+
         loadUserProfile()
-        loadStatistics()
+        if (!isDarkModeChange) {
+            loadStatistics()
+        }
         setupDarkModeSwitch()
         setupEditProfileButton(userMail)
         setupProfileImage()
     }
+
+    private fun setupBarChart() {
+        val completedBooksCountByMonth = bookDao.getCompletedBooksCountByMonth()
+
+        val entries = mutableListOf<BarEntry>()
+        for (month in 1..12) {
+            val count = completedBooksCountByMonth[month] ?: 0
+            entries.add(BarEntry(month.toFloat(), count.toFloat()))
+        }
+
+        val dataSet = BarDataSet(entries, "완독 수")
+        val barData = BarData(dataSet)
+        barChart.data = barData
+
+        val xAxis = barChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.granularity = 1f
+        xAxis.setLabelCount(12, true)
+        xAxis.valueFormatter = object : ValueFormatter() {
+            private val months = arrayOf("1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월")
+            override fun getFormattedValue(value: Float): String {
+                return months.getOrElse(value.toInt() - 1) { "" }
+            }
+        }
+
+        barChart.axisLeft.axisMinimum = 0f
+        barChart.axisRight.isEnabled = false
+        barChart.description.isEnabled = false
+        barChart.invalidate() // 차트를 갱신합니다.
+    }
+
+//    private fun loadPieChart(bookDao: BookDao) {
+//        val completedBooks = bookDao.getBooksByStatus("completed")
+//        val entries = mutableListOf<PieEntry>()
+//        val genreCounts = mutableMapOf<String, Int>()
+//
+//        for (book in completedBooks) {
+//            //val genre = book.genre
+//            //genreCounts[genre] = genreCounts.getOrDefault(genre, 0) + 1
+//        }
+//
+//        for ((genre, count) in genreCounts) {
+//            entries.add(PieEntry(count.toFloat(), genre))
+//        }
+//
+//        val dataSet = PieDataSet(entries, "Books by Genre")
+//        dataSet.colors = ColorTemplate.MATERIAL_COLORS.toList()
+//        val data = PieData(dataSet)
+//
+//        pieChart.data = data
+//        pieChart.invalidate() // Refresh chart
+//    }
 
     private fun loadUserProfile() {
         val userProfile = myPageDao.loadUserProfile(userMail)
@@ -131,7 +195,9 @@ class MyPageActivity : AppCompatActivity() {
         val userBooks = myPageDao.loadUserBooks(userId)
 
         if (statistics.isEmpty() && userBooks.isEmpty()) {
-            Toast.makeText(this, "No statistics available", Toast.LENGTH_SHORT).show()
+            if (!isDarkModeChange) { // 다크모드 변경 시에는 Toast를 띄우지 않음
+                Toast.makeText(this, "No statistics available", Toast.LENGTH_SHORT).show()
+            }
             return
         }
 
@@ -171,8 +237,10 @@ class MyPageActivity : AppCompatActivity() {
         updateDarkMode(isDarkMode)
 
         switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
+            isDarkModeChange = true
             updateDarkMode(isChecked)
             sharedPreferences.edit().putBoolean("dark_mode", isChecked).apply()
+            isDarkModeChange = false
         }
     }
 
@@ -223,4 +291,6 @@ class MyPageActivity : AppCompatActivity() {
         }
     }
 }
+
+
 
