@@ -14,6 +14,8 @@ import com.example.guru_app_.database.MemoDao
 import com.example.guru_app_.fragments.CompletedBookDetailFragment
 import com.example.guru_app_.fragments.MemoListFragment
 import com.example.guru_app_.fragments.ReadingBookDetailFragment
+import com.example.guru_app_.search.SearchActivity
+import com.example.guru_app_.shelf.BookShelfActivity
 
 class BookMemoActivity : AppCompatActivity(), MemoListFragment.MemoItemClickListener {
 
@@ -73,7 +75,8 @@ class BookMemoActivity : AppCompatActivity(), MemoListFragment.MemoItemClickList
 
         // 뒤로가기 버튼 클릭 리스너 추가
         findViewById<ImageButton>(R.id.back_button).setOnClickListener {
-            onBackPressed()
+            val intent = Intent(this, BookShelfActivity::class.java)
+            startActivity(intent)
         }
     }
     // 메모 아이템 클릭 시 호출되는 함수

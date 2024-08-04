@@ -14,6 +14,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, "LoginDB", null, 1
         db!!.execSQL("drop Table if exists users")
     }
 
+    // 새로운 회원 데이터 삽입
     fun insertData(id: String?, password: String?, name: String?, birth: String?, mail: String?): Boolean{
         val db = this.writableDatabase
         val contentValues = ContentValues()
@@ -27,7 +28,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, "LoginDB", null, 1
         return if(result == -1L) false else true
     }
 
-    //id 중복 확인. id가 존재하면 true
+    //id 중복 확인
     fun checkID(id: String?): Boolean{
         val db = this.readableDatabase
         var res = true
@@ -36,7 +37,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, "LoginDB", null, 1
         return res
     }
 
-    //mail 중복 확인. id가 존재하면 true
+    //mail 중복 확인
     fun checkMail(mail: String?): Boolean{
         val db = this.readableDatabase
         var res = true
@@ -45,7 +46,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, "LoginDB", null, 1
         return res
     }
 
-    //회원정보(메일, 비밀번호) 검색. 일치하는 정보 있으면 true
+    //이메일과 비밀번호 확인. 일치하는 정보 있으면 true 반환
     fun checkMailpass(mail: String?, password: String?) : Boolean{
         val db = this.readableDatabase
         var res = true

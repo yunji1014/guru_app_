@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- 뒤로가기 버튼 추가 -->
     <ImageButton
         android:id="@+id/back_button"
         android:layout_width="wrap_content"
