@@ -36,7 +36,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, "LoginDB", null, 1
         return res
     }
 
-    //mail 중복 확인. id가 존재하면 true
+    //mail 중복 확인. 존재하면 true
     fun checkMail(mail: String?): Boolean{
         val db = this.readableDatabase
         var res = true
