@@ -18,6 +18,6 @@ class SplashActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
-        }, 1500) // 3초 있다 메인액티비티로
+        }, 1500) // 1.5초 후에 MainActivity로 전환
     }
 }

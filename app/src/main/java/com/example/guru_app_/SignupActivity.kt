@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -16,19 +17,20 @@ import java.util.regex.Pattern
 
 class SignupActivity : AppCompatActivity() {
     lateinit var dbHelper: DBHelper
-    lateinit var back: TextView
+    lateinit var back: ImageButton
     lateinit var idcheckbtn: AppCompatButton
     lateinit var signupbtn: AppCompatButton
     lateinit var id: EditText
     lateinit var password: EditText
     lateinit var repassword: EditText
     lateinit var name: EditText
-    lateinit var birth1: EditText
-    lateinit var birth2: EditText
-    lateinit var birth3: EditText
+    lateinit var birth1: EditText //생년 입력 필드
+    lateinit var birth2: EditText //생월 입력 필드
+    lateinit var birth3: EditText //생일 입력 필드
     lateinit var mail: EditText
-    var CheckId: Boolean = false
+    var CheckId: Boolean = false //아이디 중복 체크 여부 저장 변수
 
+    //화면 터치 이벤트 처리
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         val view = currentFocus
         if (view != null && (ev.action == MotionEvent.ACTION_UP || ev.action == MotionEvent.ACTION_MOVE) && view is EditText
@@ -75,6 +77,7 @@ class SignupActivity : AppCompatActivity() {
             val userid = id.text.toString()
             val idPattern = "^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z[0-9]]{5,10}$"
 
+            //아이디가 비어 있는 경우
             if(userid == ""){
                 Toast.makeText(this@SignupActivity,
                     "아이디를 입력해주세요.",
@@ -83,6 +86,7 @@ class SignupActivity : AppCompatActivity() {
             else{
                 if(Pattern.matches(idPattern, userid)){
                     val checkid = dbHelper.checkID(userid)
+                    //사용 가능한 아이디인 경우
                     if(checkid == false){
                         CheckId = true
                         Toast.makeText(this@SignupActivity,
@@ -90,13 +94,13 @@ class SignupActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT).show()
                         idcheckbtn.setEnabled(false)
                     }
-                    else{
+                    else{ // 이미 존재하는 아이디인 경우
                         Toast.makeText(this@SignupActivity,
                             "이미 존재하는 아이디입니다.",
                             Toast.LENGTH_SHORT).show()
                     }
                 }
-                else{
+                else{ // 아이디 형식이 맞지 않는 경우
                     Toast.makeText(this@SignupActivity,
                         "아이디 형식이 옳지 않습니다.",
                         Toast.LENGTH_SHORT).show()
@@ -118,17 +122,18 @@ class SignupActivity : AppCompatActivity() {
             val pwPattern = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&.])[A-Za-z[0-9]$@$!%*#?&.]{8,16}$"
             val mailpattern = android.util.Patterns.EMAIL_ADDRESS;
 
+            // 비어있는 필드가 있는 경우
             if(userid == "" || pass == "" || repass == "" || name == "" ||
                 birth1 == "" || birth2 == "" || birth3 == "" || mail == "")
                 Toast.makeText(this@SignupActivity,
                     "회원정보를 모두 입력해주세요.",
                     Toast.LENGTH_SHORT).show()
             else{
-                //아이디 중복 확인 O
+                //아이디 중복 확인 완료
                 if(CheckId == true) {
                     //비밀번호 형식 확인
                     if (Pattern.matches(pwPattern, pass)) {
-                        // 비밀번호 재확인 O
+                        // 비밀번호 재확인 완료
                         if (pass == repass) {
                             //이메일 형식 확인
                             if(mailpattern.matcher(mail).matches()){
