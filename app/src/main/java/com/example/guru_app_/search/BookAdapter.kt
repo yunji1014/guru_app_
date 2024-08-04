@@ -20,7 +20,6 @@ class BookAdapter(
     private val books: MutableList<Book>,
     private val bookDao: BookDao
 ) : RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
-
     class BookViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val bookImage: ImageView = view.findViewById(R.id.imageView)
         val bookTitle: TextView = view.findViewById(R.id.textTitle)
