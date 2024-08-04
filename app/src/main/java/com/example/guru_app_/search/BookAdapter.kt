@@ -50,9 +50,6 @@ class BookAdapter(
 
         holder.addBookButton.setOnClickListener {
             bookDao.addBook(book)  // 책 데이터를 데이터베이스에 저장
-
-            //val intent = Intent(context, SearchActivity::class.java)
-            //context.startActivity(intent)
         }
     }
 

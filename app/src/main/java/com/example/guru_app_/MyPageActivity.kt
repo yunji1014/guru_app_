@@ -2,10 +2,14 @@ package com.example.guru_app_
 
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -19,13 +23,19 @@ import com.example.guru_app_.database.MyPageDao
 import com.example.guru_app_.shelf.BookShelfActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class MyPageActivity : AppCompatActivity() {
 
@@ -43,6 +53,12 @@ class MyPageActivity : AppCompatActivity() {
     private lateinit var bookDao: BookDao
     private lateinit var userId: String
     private lateinit var userMail: String
+
+    private var isDarkModeChange = false
+
+    companion object {
+        private const val REQUEST_IMAGE_PICK = 1001
+    }
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +91,7 @@ class MyPageActivity : AppCompatActivity() {
         }
 
         barChart = findViewById(R.id.barChart)
-        pieChart = findViewById(R.id.pieChart)
+       // pieChart = findViewById(R.id.pieChart)
         switchDarkMode = findViewById(R.id.switchDarkMode)
         edtName = findViewById(R.id.edtName)
         edtID = findViewById(R.id.edtID)
@@ -91,11 +107,69 @@ class MyPageActivity : AppCompatActivity() {
         userId = "some_user_id" // 실제 사용자 ID로 변경 필요
         userMail = usermail + ""
 
+        setupBarChart()
+//        loadPieChart(bookDao)
+
         loadUserProfile()
-        loadStatistics()
+        if (!isDarkModeChange) {
+            loadStatistics()
+        }
         setupDarkModeSwitch()
         setupEditProfileButton(userMail)
+        setupProfileImage()
     }
+
+    private fun setupBarChart() {
+        val completedBooksCountByMonth = bookDao.getCompletedBooksCountByMonth()
+
+        val entries = mutableListOf<BarEntry>()
+        for (month in 1..12) {
+            val count = completedBooksCountByMonth[month] ?: 0
+            entries.add(BarEntry(month.toFloat(), count.toFloat()))
+        }
+
+        val dataSet = BarDataSet(entries, "완독 수")
+        val barData = BarData(dataSet)
+        barChart.data = barData
+
+        val xAxis = barChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.granularity = 1f
+        xAxis.setLabelCount(12, true)
+        xAxis.valueFormatter = object : ValueFormatter() {
+            private val months = arrayOf("1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월")
+            override fun getFormattedValue(value: Float): String {
+                return months.getOrElse(value.toInt() - 1) { "" }
+            }
+        }
+
+        barChart.axisLeft.axisMinimum = 0f
+        barChart.axisRight.isEnabled = false
+        barChart.description.isEnabled = false
+        barChart.invalidate() // 차트를 갱신합니다.
+    }
+
+//    private fun loadPieChart(bookDao: BookDao) {
+//        val completedBooks = bookDao.getBooksByStatus("completed")
+//        val entries = mutableListOf<PieEntry>()
+//        val genreCounts = mutableMapOf<String, Int>()
+//
+//        for (book in completedBooks) {
+//            //val genre = book.genre
+//            //genreCounts[genre] = genreCounts.getOrDefault(genre, 0) + 1
+//        }
+//
+//        for ((genre, count) in genreCounts) {
+//            entries.add(PieEntry(count.toFloat(), genre))
+//        }
+//
+//        val dataSet = PieDataSet(entries, "Books by Genre")
+//        dataSet.colors = ColorTemplate.MATERIAL_COLORS.toList()
+//        val data = PieData(dataSet)
+//
+//        pieChart.data = data
+//        pieChart.invalidate() // Refresh chart
+//    }
 
     private fun loadUserProfile() {
         val userProfile = myPageDao.loadUserProfile(userMail)
@@ -106,7 +180,13 @@ class MyPageActivity : AppCompatActivity() {
             edtBirth.isEnabled = false
             edtID.isEnabled = false
             edtName.isEnabled = false
-            //Glide.with(this).load(it.profileUrl).into(imgProfile)
+            imgProfile.isEnabled = false
+        }
+
+        val profileImage = myPageDao.getUserProfileImage(userMail)
+        profileImage?.let {
+            val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+            imgProfile.setImageBitmap(bitmap)
         }
     }
 
@@ -115,7 +195,9 @@ class MyPageActivity : AppCompatActivity() {
         val userBooks = myPageDao.loadUserBooks(userId)
 
         if (statistics.isEmpty() && userBooks.isEmpty()) {
-            Toast.makeText(this, "No statistics available", Toast.LENGTH_SHORT).show()
+            if (!isDarkModeChange) { // 다크모드 변경 시에는 Toast를 띄우지 않음
+                Toast.makeText(this, "No statistics available", Toast.LENGTH_SHORT).show()
+            }
             return
         }
 
@@ -155,8 +237,10 @@ class MyPageActivity : AppCompatActivity() {
         updateDarkMode(isDarkMode)
 
         switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
+            isDarkModeChange = true
             updateDarkMode(isChecked)
             sharedPreferences.edit().putBoolean("dark_mode", isChecked).apply()
+            isDarkModeChange = false
         }
     }
 
@@ -172,26 +256,41 @@ class MyPageActivity : AppCompatActivity() {
         btnEditProfile.setOnClickListener {
             edtBirth.isEnabled = !edtBirth.isEnabled
             edtName.isEnabled = !edtName.isEnabled
-
+            imgProfile.isEnabled = !imgProfile.isEnabled
 
             val name = edtName.text.toString()
             val id = edtID.text.toString()
             val birth = edtBirth.text.toString()
 
             myPageDao.saveUserProfile(id, name, birth, usermail)
-
-//            val profileImageUri: Uri? = null // Get the URI of the new profile image if available
-//            if (profileImageUri != null) {
-                // Save the profile image locally or to a server if needed and update the user profile with the new image URL/path
-                // Example:
-                // val profileImagePath = saveProfileImage(profileImageUri)
-                // myPageDao.updateUserProfileImage(userId, profileImagePath)
-           // }
         }
     }
 
-    // Add a function to save the profile image if necessary
-    // private fun saveProfileImage(uri: Uri): String {
-    //     // Implement logic to save the image locally or to a server and return the path/URL
-    // }
+    private fun setupProfileImage() {
+        imgProfile.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(intent, REQUEST_IMAGE_PICK)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK) {
+            val selectedImageUri = data?.data
+            selectedImageUri?.let {
+                val inputStream = contentResolver.openInputStream(it)
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                imgProfile.setImageBitmap(bitmap)
+
+                val byteArrayOutputStream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+                val imageByteArray = byteArrayOutputStream.toByteArray()
+
+                myPageDao.saveUserProfileImage(userMail, imageByteArray)
+            }
+        }
+    }
 }
+
+
+

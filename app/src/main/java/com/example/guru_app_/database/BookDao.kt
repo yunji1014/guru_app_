@@ -12,6 +12,26 @@ import java.util.Locale
 class BookDao(context: Context)  {
     private val dbHelper: SQLiteOpenHelper = BookDatabaseHelper(context)
 
+    fun getCompletedBooksCountByMonth(): Map<Int, Int> {
+        val db = dbHelper.readableDatabase
+        val query = """
+            SELECT strftime('%m', end_date) AS month, COUNT(*) AS count
+            FROM books
+            WHERE status = 'completed' AND end_date IS NOT NULL
+            GROUP BY month
+        """
+        val cursor = db.rawQuery(query, null)
+        val completedBooksCountByMonth = mutableMapOf<Int, Int>()
+        while (cursor.moveToNext()) {
+            val month = cursor.getString(cursor.getColumnIndexOrThrow("month")).toInt()
+            val count = cursor.getInt(cursor.getColumnIndexOrThrow("count"))
+            completedBooksCountByMonth[month] = count
+        }
+        cursor.close()
+        db.close()
+        return completedBooksCountByMonth
+    }
+
     fun addBook(book: Book) {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -24,6 +44,7 @@ class BookDao(context: Context)  {
             put("end_date", book.endDate)
             put("rating", book.rating)
             put("status", book.status)
+            //put("genre", book.genre)
         }
         db.insert("books", null, values)
         db.close()
@@ -79,7 +100,9 @@ class BookDao(context: Context)  {
                     cursor.getString(cursor.getColumnIndexOrThrow("start_date")),
                     cursor.getString(cursor.getColumnIndexOrThrow("end_date")),
                     cursor.getFloat(cursor.getColumnIndexOrThrow("rating")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("status"))
+                    cursor.getString(cursor.getColumnIndexOrThrow("status")),
+                    //cursor.getString(cursor.getColumnIndexOrThrow("genre"))
+
                 )
             }
         } catch (e: Exception) {
@@ -90,6 +113,33 @@ class BookDao(context: Context)  {
         }
         return book
     }
+    fun getBooksByStatus(status: String): List<Book> {
+        val db = dbHelper.readableDatabase
+        val cursor = db.query("books", null, "status=?", arrayOf(status), null, null, null)
+        val books = mutableListOf<Book>()
+        with(cursor) {
+            while (moveToNext()) {
+                val book = Book(
+                    getInt(getColumnIndexOrThrow("id")),
+                    getString(getColumnIndexOrThrow("title")),
+                    getString(getColumnIndexOrThrow("author")),
+                    getString(getColumnIndexOrThrow("publisher")),
+                    getString(getColumnIndexOrThrow("isbn")),
+                    getString(getColumnIndexOrThrow("cover_image")),
+                    getString(getColumnIndexOrThrow("start_date")),
+                    getString(getColumnIndexOrThrow("end_date")),
+                    getFloat(getColumnIndexOrThrow("rating")),
+                    getString(getColumnIndexOrThrow("status")),
+                    //getString(getColumnIndexOrThrow("genre"))
+                )
+                books.add(book)
+            }
+        }
+        cursor.close()
+        db.close()
+        return books
+    }
+
 
 
     fun getAllBooks(): List<Book> {
