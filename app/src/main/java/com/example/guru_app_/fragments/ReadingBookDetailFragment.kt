@@ -19,7 +19,7 @@ class ReadingBookDetailFragment : Fragment() {
     private lateinit var bookDao: BookDao
     private var bookId: Int = -1
     private var completeButtonClickListener: (() -> Unit)? = null
-
+    // Fragment 생성
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -58,7 +58,7 @@ class ReadingBookDetailFragment : Fragment() {
             completeButtonClickListener?.invoke()
         }
     }
-
+    //완료버튼 클릭 리스너
     fun setCompleteButtonClickListener(listener: () -> Unit) {
         completeButtonClickListener = listener
     }

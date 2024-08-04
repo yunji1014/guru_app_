@@ -15,7 +15,7 @@ class BookDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         private const val TABLE_USER_PHOTO = "user_photo"
         private const val COLUMN_USER_ID = "user_id"
         private const val COLUMN_IMAGE = "image"
-
+        //책 테이블 생성 쿼리
         private const val CREATE_BOOKS_TABLE = """
             CREATE TABLE books (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,7 +31,7 @@ class BookDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 genre TEXT
             );
         """
-
+        // 메모 테이블 생성 쿼리
         private const val CREATE_MEMOS_TABLE = """
             CREATE TABLE memos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,7 +45,7 @@ class BookDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
             );
         """
-
+        // 통계 테이블 생성 쿼리
         private const val CREATE_STATISTICS_TABLE = """
             CREATE TABLE IF NOT EXISTS Statistics (
                 user_id TEXT NOT NULL,
@@ -56,7 +56,7 @@ class BookDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 PRIMARY KEY (user_id, month)
             );
         """
-
+        //사용자 테이블 생성 쿼리
         private const val CREATE_USERS_TABLE = """
             CREATE TABLE users (
                 user_id TEXT PRIMARY KEY,
@@ -64,7 +64,7 @@ class BookDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 phone_number TEXT
             );
         """
-
+        //사용자-책 테이블 생성 쿼리
         private const val CREATE_USER_BOOKS_TABLE = """
             CREATE TABLE user_books (
                 user_id TEXT,
@@ -76,7 +76,7 @@ class BookDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 PRIMARY KEY (user_id, isbn)
             )
         """
-
+        //사용자 프로필 사진 테이블 생성 쿼리
         private const val CREATE_TABLE_USER_PHOTO = """
             CREATE TABLE $TABLE_USER_PHOTO (
                 $COLUMN_USER_ID TEXT PRIMARY KEY,

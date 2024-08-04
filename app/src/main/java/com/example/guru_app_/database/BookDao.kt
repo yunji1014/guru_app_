@@ -11,7 +11,7 @@ import java.util.Locale
 
 class BookDao(context: Context)  {
     private val dbHelper: SQLiteOpenHelper = BookDatabaseHelper(context)
-
+    // 월별 완독 책 수 가져오기
     fun getCompletedBooksCountByMonth(): Map<Int, Int> {
         val db = dbHelper.readableDatabase
         val query = """
@@ -31,7 +31,7 @@ class BookDao(context: Context)  {
         db.close()
         return completedBooksCountByMonth
     }
-
+    // 책 추가
     fun addBook(book: Book) {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -49,7 +49,7 @@ class BookDao(context: Context)  {
         db.insert("books", null, values)
         db.close()
     }
-
+    //책 상태 업데이트 함수
     fun updateBookStatus(bookId: Int, status: String) {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -66,7 +66,7 @@ class BookDao(context: Context)  {
             db.close()
         }
     }
-
+    //책 평점 업데이트 함수
     fun updateBookRating(bookId: Int, rating: Float) {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -80,7 +80,7 @@ class BookDao(context: Context)  {
             db.close()
         }
     }
-
+    // 책 아이디로 책 정보 가져오는 함수
     fun getBookById(bookId: Int): Book? {
         val db = dbHelper.readableDatabase
         var book: Book? = null
@@ -113,6 +113,7 @@ class BookDao(context: Context)  {
         }
         return book
     }
+    //책 상태에 따라 목록 가져오기
     fun getBooksByStatus(status: String): List<Book> {
         val db = dbHelper.readableDatabase
         val cursor = db.query("books", null, "status=?", arrayOf(status), null, null, null)
@@ -141,7 +142,7 @@ class BookDao(context: Context)  {
     }
 
 
-
+    //모든 책 가져오기
     fun getAllBooks(): List<Book> {
         val db = dbHelper.readableDatabase
         val cursor = db.query("books", null, null, null, null, null, null)
@@ -167,21 +168,21 @@ class BookDao(context: Context)  {
         db.close()
         return books
     }
-
+    //책 삭제 함수
     fun deleteBook(bookId: Int?) {
         val db = dbHelper.writableDatabase
         db.delete("books", "id = ?", arrayOf(bookId.toString()))
         db.close()
     }
 
-    companion object {
+    companion object {//현재 날짜 가져오기
         fun getCurrentDate(): String {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val date = Date()
             return dateFormat.format(date)
         }
     }
-
+    //다음 책 아이디 가져오기
     private fun getNextId(): Int {
         val db = dbHelper.readableDatabase
         val cursor = db.rawQuery("SELECT id FROM books ORDER BY id", null)
