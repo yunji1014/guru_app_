@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -144,6 +146,16 @@ class MyPageActivity : AppCompatActivity() {
             }
         }
 
+        // 현재 모드에 따라 축과 텍스트 색상 설정
+        val isDarkMode = resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        val textColor = if (isDarkMode) Color.WHITE else Color.BLACK
+
+        xAxis.textColor = textColor
+        barChart.axisLeft.textColor = textColor
+        barChart.axisRight.textColor = textColor
+        barChart.legend.textColor = textColor
+
         barChart.axisLeft.axisMinimum = 0f
         barChart.axisLeft.granularity = 1f // 세로 축 간격을 1로 설정
         barChart.axisLeft.valueFormatter = object : ValueFormatter() {
@@ -156,6 +168,7 @@ class MyPageActivity : AppCompatActivity() {
         barChart.description.isEnabled = false
         barChart.invalidate() // 차트를 갱신합니다.
     }
+
 
     // 사용자 프로필 로드
     private fun loadUserProfile() {
