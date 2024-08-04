@@ -6,7 +6,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-class RecyclerItemClickListener(
+class RecyclerItemClickListener(//클릭 이벤트 처리
     context: Context,
     recyclerView: RecyclerView,
     private val listener: OnItemClickListener
@@ -29,7 +29,7 @@ class RecyclerItemClickListener(
             }
         }
     })
-
+    //터치 이벤트, RecyclerView의 아이템 상호작용 여부 결정
     override fun onInterceptTouchEvent(view: RecyclerView, e: MotionEvent): Boolean {
         val child = view.findChildViewUnder(e.x, e.y)
         if (child != null && gestureDetector.onTouchEvent(e)) {

@@ -20,7 +20,7 @@ class BookMemoActivity : AppCompatActivity(), MemoListFragment.MemoItemClickList
     private lateinit var memoDao: MemoDao
     private lateinit var bookDao: BookDao
     private var bookId: Int = -1
-
+    //메모 상세보기 액티비티 시작, 결과 받아오는 런쳐
     private val memoDetailLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val memoListFragment = supportFragmentManager.findFragmentById(R.id.memo_list_fragment_container) as? MemoListFragment
@@ -31,17 +31,18 @@ class BookMemoActivity : AppCompatActivity(), MemoListFragment.MemoItemClickList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_book_memo)
-
+        // DAO 초기화
         bookDao = BookDao(this)
         memoDao = MemoDao(this)
-
+        // 인텐트로부터 책 ID를 받아오기
         bookId = intent.getIntExtra("BOOK_ID", -1)
         if (bookId == -1) {
             finish()
             return
         }
-
+        //// 책 정보를 가져옴
         val book = bookDao.getBookById(bookId)
+        // 프래그먼트를 동적으로 추가
 
         if (savedInstanceState == null) {
             if (book?.status == "completed") {
@@ -62,7 +63,7 @@ class BookMemoActivity : AppCompatActivity(), MemoListFragment.MemoItemClickList
                 .replace(R.id.memo_list_fragment_container, MemoListFragment.newInstance(bookId))
                 .commit()
         }
-
+        // 메모 추가 버튼 클릭 리스너
         findViewById<ImageButton>(R.id.imageButton2).setOnClickListener {
             val intent = Intent(this, MemoDetailActivity::class.java)
             intent.putExtra("MEMO_ID", -1)
@@ -75,14 +76,14 @@ class BookMemoActivity : AppCompatActivity(), MemoListFragment.MemoItemClickList
             onBackPressed()
         }
     }
-
+    // 메모 아이템 클릭 시 호출되는 함수
     override fun onMemoItemClick(memoId: Int) {
         val intent = Intent(this, MemoDetailActivity::class.java)
         intent.putExtra("MEMO_ID", memoId)
         intent.putExtra("BOOK_ID", bookId)
         memoDetailLauncher.launch(intent)
     }
-
+    // 책 완료 후 평가 다이얼로그를 보여주는 함수
     private fun showRatingDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_rating, null)
         val ratingBar: RatingBar = dialogView.findViewById(R.id.rating_bar)

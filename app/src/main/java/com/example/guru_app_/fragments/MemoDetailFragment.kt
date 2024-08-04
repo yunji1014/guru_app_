@@ -11,7 +11,7 @@ import com.example.guru_app_.R
 import com.example.guru_app_.database.MemoDao
 import com.example.guru_app_.models.Memo
 
-class MemoDetailFragment : Fragment() {
+class MemoDetailFragment : Fragment() {//메모 상세 정보 표시 프래그먼트
     private var memoId: Int = -1
     private lateinit var memoDao: MemoDao
     private lateinit var memoTitle: EditText

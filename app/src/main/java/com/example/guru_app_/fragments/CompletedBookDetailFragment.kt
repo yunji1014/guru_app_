@@ -13,12 +13,12 @@ import com.example.guru_app_.R
 import com.example.guru_app_.database.BookDao
 import com.example.guru_app_.models.Book
 
-class CompletedBookDetailFragment : Fragment() {
+class CompletedBookDetailFragment : Fragment() {//완료 책 상세정보 표시 프래그먼트
 
     private var bookId: Int = -1
     private lateinit var bookDao: BookDao
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {//bookId 초기화
         super.onCreate(savedInstanceState)
         arguments?.let {
             bookId = it.getInt(ARG_BOOK_ID)
@@ -26,14 +26,14 @@ class CompletedBookDetailFragment : Fragment() {
         bookDao = BookDao(requireContext())
     }
 
-    override fun onCreateView(
+    override fun onCreateView(//레이아웃 인플레이트
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_completed_book_detail, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {//뷰에 상세정보 표시
         super.onViewCreated(view, savedInstanceState)
 
         val book: Book? = bookDao.getBookById(bookId)
